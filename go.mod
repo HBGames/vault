@@ -14,6 +14,8 @@ replace github.com/hashicorp/vault/sdk => ./sdk
 
 replace go.etcd.io/etcd/client/pkg/v3 v3.5.0 => go.etcd.io/etcd/client/pkg/v3 v3.0.0-20210928084031-3df272774672
 
+replace github.com/hashicorp/go-discover => github.com/hbgames/go-discover v0.0.0-20221023012830-28cac1151711
+
 require (
 	cloud.google.com/go/monitoring v1.2.0
 	cloud.google.com/go/spanner v1.5.1
@@ -323,6 +325,7 @@ require (
 	github.com/hashicorp/vault/api/auth/kubernetes v0.3.0 // indirect
 	github.com/hashicorp/vic v1.5.1-0.20190403131502-bbfe86ec9443 // indirect
 	github.com/hashicorp/yamux v0.0.0-20211028200310-0bc27b27de87 // indirect
+	github.com/hetznercloud/hcloud-go v1.35.3 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
