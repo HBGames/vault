@@ -22,9 +22,13 @@
         @message="Your Vault license has terminated and Vault is sealed. To unseal, add a current license to your configuration and restart Vault."
       >
         <p class="align-right">
-          <LearnLink @path="/tutorials/nomad/hashicorp-enterprise-license">
+          <a
+            href="https://learn.hashicorp.com/tutorials/nomad/hashicorp-enterprise-license"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
             License documentation
-          </LearnLink>
+          </a>
         </p>
       </EmptyState>
     </div>
@@ -63,9 +67,9 @@
     <Page.footer>
       <div class="box is-borderless is-shadowless">
         <p>
-          <ExternalLink @href="https://www.vaultproject.io/docs/concepts/seal">
+          <a target="_blank" rel="noreferrer noopener" href="https://www.vaultproject.io/docs/concepts/seal">
             Seal/unseal documentation
-          </ExternalLink>
+          </a>
         </p>
       </div>
     </Page.footer>

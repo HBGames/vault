@@ -36,7 +36,7 @@ func prepareCockroachDBTestContainer(t *testing.T) (func(), *Config) {
 	}
 
 	runner, err := docker.NewServiceRunner(docker.RunOptions{
-		ImageRepo:     "docker.mirror.hashicorp.services/cockroachdb/cockroach",
+		ImageRepo:     "cockroachdb/cockroach",
 		ImageTag:      "release-1.0",
 		ContainerName: "cockroachdb",
 		Cmd:           []string{"start", "--insecure"},

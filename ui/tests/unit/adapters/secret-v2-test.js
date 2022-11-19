@@ -56,11 +56,11 @@ module('Unit | Adapter | secret-v2', function (hooks) {
     ],
   ].forEach(([adapterMethod, store, type, queryOrSnapshot, expectedHttpVerb, expectedURL]) => {
     test(`secret-v2: ${adapterMethod}`, function (assert) {
-      const adapter = this.owner.lookup('adapter:secret-v2');
+      let adapter = this.owner.lookup('adapter:secret-v2');
       adapter[adapterMethod](store, type, queryOrSnapshot);
-      const { url, method } = this.server.handledRequests[0];
-      assert.strictEqual(url, expectedURL, `${adapterMethod} calls the correct url: ${expectedURL}`);
-      assert.strictEqual(
+      let { url, method } = this.server.handledRequests[0];
+      assert.equal(url, expectedURL, `${adapterMethod} calls the correct url: ${expectedURL}`);
+      assert.equal(
         method,
         expectedHttpVerb,
         `${adapterMethod} uses the correct http verb: ${expectedHttpVerb}`

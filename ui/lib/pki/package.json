@@ -5,9 +5,8 @@
     "ember-engine"
   ],
   "dependencies": {
-    "ember-cli-babel": "*",
     "ember-cli-htmlbars": "*",
-    "ember-cli-typescript": "*"
+    "ember-cli-babel": "*"
   },
   "ember-addon": {
     "paths": [

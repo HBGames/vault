@@ -28,7 +28,6 @@ import (
 const (
 	testIP              = "127.0.0.1"
 	testUserName        = "vaultssh"
-	testMultiUserName   = "vaultssh,otherssh"
 	testAdminUser       = "vaultssh"
 	testCaKeyType       = "ca"
 	testOTPKeyType      = "otp"
@@ -137,7 +136,7 @@ func prepareTestContainer(t *testing.T, tag, caPublicKeyPEM string) (func(), str
 	}
 	runner, err := docker.NewServiceRunner(docker.RunOptions{
 		ContainerName: "openssh",
-		ImageRepo:     "docker.mirror.hashicorp.services/linuxserver/openssh-server",
+		ImageRepo:     "linuxserver/openssh-server",
 		ImageTag:      tag,
 		Env: []string{
 			"DOCKER_MODS=linuxserver/mods:openssh-server-openssh-client",
@@ -353,15 +352,6 @@ func TestBackend_AllowedUsersTemplate(t *testing.T) {
 		"{{ identity.entity.metadata.ssh_username }}",
 		testUserName, map[string]string{
 			"ssh_username": testUserName,
-		},
-	)
-}
-
-func TestBackend_MultipleAllowedUsersTemplate(t *testing.T) {
-	testAllowedUsersTemplate(t,
-		"{{ identity.entity.metadata.ssh_username }}",
-		testUserName, map[string]string{
-			"ssh_username": testMultiUserName,
 		},
 	)
 }

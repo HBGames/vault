@@ -98,10 +98,10 @@ export default class History extends Component {
     }
 
     // get upgrade data for initial upgrade to 1.9 and/or 1.10
-    const relevantUpgrades = [];
+    let relevantUpgrades = [];
     const importantUpgrades = ['1.9', '1.10'];
     importantUpgrades.forEach((version) => {
-      const findUpgrade = versionHistory.find((versionData) => versionData.id.match(version));
+      let findUpgrade = versionHistory.find((versionData) => versionData.id.match(version));
       if (findUpgrade) relevantUpgrades.push(findUpgrade);
     });
 
@@ -117,7 +117,7 @@ export default class History extends Component {
     const activityEnd = new Date(this.getActivityResponse.endTime);
     const upgradesWithinData = this.upgradeVersionHistory.filter((upgrade) => {
       // TODO how do timezones affect this?
-      const upgradeDate = new Date(upgrade.timestampInstalled);
+      let upgradeDate = new Date(upgrade.timestampInstalled);
       return isAfter(upgradeDate, activityStart) && isBefore(upgradeDate, activityEnd);
     });
     // return all upgrades that happened within date range of queried activity
@@ -129,13 +129,13 @@ export default class History extends Component {
       return null;
     }
     if (this.upgradeDuringActivity.length === 2) {
-      const firstUpgrade = this.upgradeDuringActivity[0];
-      const secondUpgrade = this.upgradeDuringActivity[1];
-      const firstDate = dateFormat([firstUpgrade.timestampInstalled, 'MMM d, yyyy'], { isFormatted: true });
-      const secondDate = dateFormat([secondUpgrade.timestampInstalled, 'MMM d, yyyy'], { isFormatted: true });
+      let firstUpgrade = this.upgradeDuringActivity[0];
+      let secondUpgrade = this.upgradeDuringActivity[1];
+      let firstDate = dateFormat([firstUpgrade.timestampInstalled, 'MMM d, yyyy'], { isFormatted: true });
+      let secondDate = dateFormat([secondUpgrade.timestampInstalled, 'MMM d, yyyy'], { isFormatted: true });
       return `Vault was upgraded to ${firstUpgrade.id} (${firstDate}) and ${secondUpgrade.id} (${secondDate}) during this time range.`;
     } else {
-      const upgrade = this.upgradeDuringActivity[0];
+      let upgrade = this.upgradeDuringActivity[0];
       return `Vault was upgraded to ${upgrade.id} on ${dateFormat(
         [upgrade.timestampInstalled, 'MMM d, yyyy'],
         { isFormatted: true }
@@ -148,7 +148,7 @@ export default class History extends Component {
       return null;
     }
     if (this.upgradeDuringActivity.length === 1) {
-      const version = this.upgradeDuringActivity[0].id;
+      let version = this.upgradeDuringActivity[0].id;
       if (version.match('1.9')) {
         return ' How we count clients changed in 1.9, so keep that in mind when looking at the data below.';
       }
@@ -164,8 +164,8 @@ export default class History extends Component {
     if (!this.startTimeFromResponse) {
       return null;
     }
-    const month = this.startTimeFromResponse[1];
-    const year = this.startTimeFromResponse[0];
+    let month = this.startTimeFromResponse[1];
+    let year = this.startTimeFromResponse[0];
     return `${this.arrayOfMonths[month]} ${year}`;
   }
 
@@ -173,8 +173,8 @@ export default class History extends Component {
     if (!this.endTimeFromResponse) {
       return null;
     }
-    const month = this.endTimeFromResponse[1];
-    const year = this.endTimeFromResponse[0];
+    let month = this.endTimeFromResponse[1];
+    let year = this.endTimeFromResponse[0];
     return `${this.arrayOfMonths[month]} ${year}`;
   }
 
@@ -289,7 +289,7 @@ export default class History extends Component {
     }
     // clicked "Edit" Billing start month in History which opens a modal.
     if (dateType === 'startTime') {
-      const monthIndex = this.arrayOfMonths.indexOf(month);
+      let monthIndex = this.arrayOfMonths.indexOf(month);
       this.startTimeRequested = [year.toString(), monthIndex]; // ['2021', 0] (e.g. January 2021)
       this.endTimeRequested = null;
     }
@@ -302,7 +302,7 @@ export default class History extends Component {
 
     try {
       this.isLoadingQuery = true;
-      const response = await this.store.queryRecord('clients/activity', {
+      let response = await this.store.queryRecord('clients/activity', {
         start_time: this.startTimeRequested,
         end_time: this.endTimeRequested,
       });

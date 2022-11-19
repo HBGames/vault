@@ -49,8 +49,7 @@
     {{/if}}
     {{#if @model.canEdit}}
       <ToolbarLink
-        @route="vault.cluster.access.oidc.assignments.assignment.edit"
-        @model={{@model.name}}
+        @params={{array "vault.cluster.access.oidc.assignments.assignment.edit" @model.name}}
         data-test-oidc-assignment-edit
       >
         Edit assignment

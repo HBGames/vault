@@ -7,7 +7,7 @@ import { expandAttributeMeta } from 'vault/utils/field-to-attrs';
 const M = Model.extend({
   idPrefix: 'alphabet/',
   idForNav: computed('id', 'idPrefix', function () {
-    const modelId = this.id || '';
+    let modelId = this.id || '';
     return `${this.idPrefix}${modelId}`;
   }),
 
@@ -23,7 +23,7 @@ const M = Model.extend({
   }),
 
   attrs: computed(function () {
-    const keys = ['name', 'alphabet'];
+    let keys = ['name', 'alphabet'];
     return expandAttributeMeta(this, keys);
   }),
 

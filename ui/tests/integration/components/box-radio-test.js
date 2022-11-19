@@ -18,11 +18,11 @@ module('Integration | Component | box-radio', function (hooks) {
     const spy = sinon.spy();
     this.set('onRadioChange', spy);
     await render(hbs`<BoxRadio
-      @type={{this.type}}
-      @glyph={{this.type}}
-      @displayName={{this.displayName}}
-      @onRadioChange={{this.onRadioChange}}
-      @disabled={{this.disabled}}
+      @type={{type}}
+      @glyph={{type}}
+      @displayName={{displayName}}
+      @onRadioChange={{onRadioChange}}
+      @disabled={{disabled}}
     />`);
 
     assert.dom(this.element).hasText('An Option', 'shows the display name of the option');
@@ -35,11 +35,11 @@ module('Integration | Component | box-radio', function (hooks) {
     const spy = sinon.spy();
     this.set('onRadioChange', spy);
     await render(hbs`<BoxRadio
-      @type={{this.type}}
-      @glyph={{this.type}}
-      @displayName={{this.displayName}}
-      @onRadioChange={{this.onRadioChange}}
-      @disabled={{true}}
+      @type={{type}}
+      @glyph={{type}}
+      @displayName={{displayName}}
+      @onRadioChange={{onRadioChange}}
+      @disabled=true
     />`);
 
     assert.dom(this.element).hasText('An Option', 'shows the display name of the option');

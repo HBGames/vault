@@ -66,18 +66,6 @@ func GenerateCert(caCertTemplate *x509.Certificate, caSigner crypto.Signer) (str
 		SubjectKeyId:   signerKeyId,
 	}
 
-	// Only add our hostname to SANs if it isn't found.
-	foundHostname := false
-	for _, value := range template.DNSNames {
-		if value == hostname {
-			foundHostname = true
-			break
-		}
-	}
-	if !foundHostname {
-		template.DNSNames = append(template.DNSNames, hostname)
-	}
-
 	bs, err := x509.CreateCertificate(
 		rand.Reader, &template, caCertTemplate, signer.Public(), caSigner)
 	if err != nil {
@@ -125,6 +113,7 @@ func GenerateCA() (*CaCert, error) {
 		NotBefore:             time.Now().Add(-1 * time.Minute),
 		AuthorityKeyId:        signerKeyId,
 		SubjectKeyId:          signerKeyId,
+		IPAddresses:           []net.IP{net.ParseIP("127.0.0.1")},
 	}
 
 	bs, err := x509.CreateCertificate(

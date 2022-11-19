@@ -13,7 +13,7 @@ export default Base.extend({
 
   redirect(model) {
     const cluster = model.cluster;
-    const replicationMode = this.paramsFor('mode').replication_mode;
+    let replicationMode = this.paramsFor('mode').replication_mode;
     if (
       !this.version.hasPerfReplication ||
       replicationMode !== 'performance' ||

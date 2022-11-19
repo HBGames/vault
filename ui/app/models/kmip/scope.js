@@ -5,7 +5,7 @@ import attachCapabilities from 'vault/lib/attach-capabilities';
 
 import { expandAttributeMeta } from 'vault/utils/field-to-attrs';
 
-const ModelExport = Model.extend({
+let ModelExport = Model.extend({
   name: attr('string'),
   backend: attr({ readOnly: true }),
   attrs: computed(function () {

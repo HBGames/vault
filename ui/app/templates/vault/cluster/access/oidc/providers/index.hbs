@@ -1,6 +1,6 @@
 <Toolbar>
   <ToolbarActions>
-    <ToolbarLink @route="vault.cluster.access.oidc.providers.create" @type="add" data-test-oidc-provider-create>
+    <ToolbarLink data-test-oidc-provider-create @type="add" @params={{array "vault.cluster.access.oidc.providers.create"}}>
       Create provider
     </ToolbarLink>
   </ToolbarActions>

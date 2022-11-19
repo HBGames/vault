@@ -19,9 +19,8 @@ func (c *Core) metricsLoop(stopCh chan struct{}) {
 	emitTimer := time.Tick(time.Second)
 
 	stopOrHAState := func() (bool, consts.HAState) {
-		l := newLockGrabber(c.stateLock.RLock, c.stateLock.RUnlock, stopCh)
-		go l.grab()
-		if stopped := l.lockOrStop(); stopped {
+		stopped := grabLockOrStop(c.stateLock.RLock, c.stateLock.RUnlock, stopCh)
+		if stopped {
 			return true, 0
 		}
 		defer c.stateLock.RUnlock()
@@ -113,20 +112,18 @@ func (c *Core) metricsLoop(stopCh chan struct{}) {
 				c.metricSink.SetGaugeWithLabels([]string{"core", "replication", "dr", "secondary"}, 0, nil)
 			}
 
-			// If we're using a raft backend, emit raft metrics
-			if rb, ok := c.underlyingPhysical.(*raft.RaftBackend); ok {
-				rb.CollectMetrics(c.MetricSink())
-			}
-
 			// Capture the total number of in-flight requests
 			c.inFlightReqGaugeMetric()
 
 			// Refresh gauge metrics that are looped
 			c.cachedGaugeMetricsEmitter()
+
+			// If we're using a raft backend, emit boltdb metrics
+			if rb, ok := c.underlyingPhysical.(*raft.RaftBackend); ok {
+				rb.CollectMetrics(c.MetricSink())
+			}
 		case <-writeTimer:
-			l := newLockGrabber(c.stateLock.RLock, c.stateLock.RUnlock, stopCh)
-			go l.grab()
-			if stopped := l.lockOrStop(); stopped {
+			if stopped := grabLockOrStop(c.stateLock.RLock, c.stateLock.RUnlock, stopCh); stopped {
 				return
 			}
 			// Ship barrier encryption counts if a perf standby or the active node
@@ -232,12 +229,15 @@ func (c *Core) tokenGaugeTtlCollector(ctx context.Context) ([]metricsutil.GaugeL
 	return ts.gaugeCollectorByTtl(ctx)
 }
 
-// emitMetricsActiveNode is used to start all the periodic metrics; all of them should
-// be shut down when stopCh is closed.  This code runs on the active node only.
-func (c *Core) emitMetricsActiveNode(stopCh chan struct{}) {
+// emitMetrics is used to start all the periodc metrics; all of them should
+// be shut down when stopCh is closed.
+func (c *Core) emitMetrics(stopCh chan struct{}) {
 	// The gauge collection processes are started and stopped here
 	// because there's more than one TokenManager created during startup,
 	// but we only want one set of gauges.
+	//
+	// Both active nodes and performance standby nodes call emitMetrics
+	// so we have to handle both.
 	metricsInit := []struct {
 		MetricName    []string
 		MetadataLabel []metrics.Label
@@ -346,8 +346,8 @@ func (c *Core) findKvMounts() []*kvMount {
 	c.mountsLock.RLock()
 	defer c.mountsLock.RUnlock()
 
-	// we don't grab the statelock, so this code might run during or after the seal process.
-	// Therefore, we need to check if c.mounts is nil. If we do not, this will panic when
+	// emitMetrics doesn't grab the statelock, so this code might run during or after the seal process.
+	// Therefore, we need to check if c.mounts is nil. If we do not, emitMetrics will panic if this is
 	// run after seal.
 	if c.mounts == nil {
 		return mounts

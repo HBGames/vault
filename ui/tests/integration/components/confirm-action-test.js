@@ -8,11 +8,11 @@ module('Integration | Component | confirm-action', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it renders and on click shows the correct icon', async function (assert) {
-    const confirmAction = sinon.spy();
+    let confirmAction = sinon.spy();
     this.set('onConfirm', confirmAction);
     await render(hbs`
       <ConfirmAction
-        @onConfirmAction={{this.onConfirm}}
+        @onConfirmAction={{onConfirm}}
         @buttonClasses="toolbar-link"
       >
         DELETE
@@ -25,11 +25,11 @@ module('Integration | Component | confirm-action', function (hooks) {
   });
 
   test('it closes the confirmation modal on successful delete', async function (assert) {
-    const confirmAction = sinon.spy();
+    let confirmAction = sinon.spy();
     this.set('onConfirm', confirmAction);
     await render(hbs`
       <ConfirmAction
-        @onConfirmAction={{this.onConfirm}}
+        @onConfirmAction={{onConfirm}}
         @buttonClasses="toolbar-link"
       >
         DELETE

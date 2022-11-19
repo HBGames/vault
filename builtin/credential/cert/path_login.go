@@ -62,9 +62,6 @@ func (b *backend) pathLoginResolveRole(ctx context.Context, req *logical.Request
 }
 
 func (b *backend) pathLoginAliasLookahead(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
-	if req.Connection == nil || req.Connection.ConnState == nil {
-		return nil, fmt.Errorf("tls connection not found")
-	}
 	clientCerts := req.Connection.ConnState.PeerCertificates
 	if len(clientCerts) == 0 {
 		return nil, fmt.Errorf("no client certificate found")
@@ -236,7 +233,7 @@ func (b *backend) verifyCredentials(ctx context.Context, req *logical.Request, d
 	var certName string
 	if req.Auth != nil { // It's a renewal, use the saved certName
 		certName = req.Auth.Metadata["cert_name"]
-	} else if d != nil { // d is nil if handleAuthRenew call the authRenew
+	} else {
 		certName = d.Get("name").(string)
 	}
 

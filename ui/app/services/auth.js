@@ -91,12 +91,11 @@ export default Service.extend({
       },
     };
 
-    const namespace =
-      typeof options.namespace === 'undefined' ? this.namespaceService.path : options.namespace;
+    let namespace = typeof options.namespace === 'undefined' ? this.namespaceService.path : options.namespace;
     if (namespace) {
       defaults.headers['X-Vault-Namespace'] = namespace;
     }
-    const opts = assign(defaults, options);
+    let opts = assign(defaults, options);
 
     return fetch(url, {
       method: opts.method || 'GET',
@@ -113,19 +112,19 @@ export default Service.extend({
   },
 
   renewCurrentToken() {
-    const namespace = this.authData.userRootNamespace;
+    let namespace = this.authData.userRootNamespace;
     const url = '/v1/auth/token/renew-self';
     return this.ajax(url, 'POST', { namespace });
   },
 
   revokeCurrentToken() {
-    const namespace = this.authData.userRootNamespace;
+    let namespace = this.authData.userRootNamespace;
     const url = '/v1/auth/token/revoke-self';
     return this.ajax(url, 'POST', { namespace });
   },
 
   calculateExpiration(resp) {
-    const now = this.now();
+    let now = this.now();
     const ttl = resp.ttl || resp.lease_duration;
     const tokenExpirationEpoch = now + ttl * 1e3;
     this.set('expirationCalcTS', now);
@@ -136,9 +135,9 @@ export default Service.extend({
   },
 
   persistAuthData() {
-    const [firstArg, resp] = arguments;
-    const tokens = this.tokens;
-    const currentNamespace = this.namespaceService.path || '';
+    let [firstArg, resp] = arguments;
+    let tokens = this.tokens;
+    let currentNamespace = this.namespaceService.path || '';
     let tokenName;
     let options;
     let backend;
@@ -150,7 +149,7 @@ export default Service.extend({
       backend = options.backend;
     }
 
-    const currentBackend = BACKENDS.findBy('type', backend);
+    let currentBackend = BACKENDS.findBy('type', backend);
     let displayName;
     if (isArray(currentBackend.displayNamePath)) {
       displayName = currentBackend.displayNamePath.map((name) => get(resp, name)).join('/');
@@ -158,7 +157,7 @@ export default Service.extend({
       displayName = get(resp, currentBackend.displayNamePath);
     }
 
-    const { entity_id, policies, renewable, namespace_path } = resp;
+    let { entity_id, policies, renewable, namespace_path } = resp;
     // here we prefer namespace_path if its defined,
     // else we look and see if there's already a namespace saved
     // and then finally we'll use the current query param if the others
@@ -178,7 +177,7 @@ export default Service.extend({
     if (typeof userRootNamespace === 'undefined') {
       userRootNamespace = currentNamespace;
     }
-    const data = {
+    let data = {
       userRootNamespace,
       displayName,
       backend: currentBackend,
@@ -243,7 +242,7 @@ export default Service.extend({
 
   renewAfterEpoch: computed('currentTokenName', 'expirationCalcTS', function () {
     const tokenName = this.currentTokenName;
-    const { expirationCalcTS } = this;
+    let { expirationCalcTS } = this;
     const data = this.getTokenData(tokenName);
     if (!tokenName || !data || !expirationCalcTS) {
       return null;
@@ -337,7 +336,7 @@ export default Service.extend({
     if (mfa_requirement) {
       const { mfa_request_id, mfa_constraints } = mfa_requirement;
       const constraints = [];
-      for (const key in mfa_constraints) {
+      for (let key in mfa_constraints) {
         const methods = mfa_constraints[key].any;
         const isMulti = methods.length > 1;
 

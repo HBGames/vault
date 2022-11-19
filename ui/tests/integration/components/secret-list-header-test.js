@@ -16,7 +16,7 @@ module('Integration | Component | secret-list-header', function (hooks) {
 
     this.server.post('/sys/capabilities-self', () => {});
 
-    for (const type of backends) {
+    for (let type of backends) {
       const data = this.server.create('secret-engine', 2, { type });
       this.model = mirageToModels(data);
       await render(hbs`
@@ -29,7 +29,7 @@ module('Integration | Component | secret-list-header', function (hooks) {
         assert
           .dom(selector)
           .hasText(
-            `Version ${this.model.version || 1}`,
+            `Version ${this.model.options.version}`,
             `Badge renders with correct version for ${type} engine type`
           );
       } else {

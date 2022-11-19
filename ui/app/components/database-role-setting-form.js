@@ -19,7 +19,7 @@ import { getStatementFields, getRoleFields } from '../utils/database-helpers';
 export default class DatabaseRoleSettingForm extends Component {
   get settingFields() {
     if (!this.args.roleType) return null;
-    const dbValidFields = getRoleFields(this.args.roleType);
+    let dbValidFields = getRoleFields(this.args.roleType);
     return this.args.attrs.filter((a) => {
       return dbValidFields.includes(a.name);
     });
@@ -29,7 +29,7 @@ export default class DatabaseRoleSettingForm extends Component {
     const type = this.args.roleType;
     const plugin = this.args.dbType;
     if (!type) return null;
-    const dbValidFields = getStatementFields(type, plugin);
+    let dbValidFields = getStatementFields(type, plugin);
     return this.args.attrs.filter((a) => {
       return dbValidFields.includes(a.name);
     });

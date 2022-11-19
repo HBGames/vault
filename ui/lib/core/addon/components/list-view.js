@@ -36,17 +36,17 @@ export default class ListView extends Component {
   }
 
   get showPagination() {
-    const meta = this.args.items.meta;
+    let meta = this.args.items.meta;
     return this.args.paginationRouteName && meta && meta.lastPage > 1 && meta.total > 0;
   }
 
   get emptyTitle() {
-    const items = pluralize(this.itemNoun);
+    let items = pluralize(this.itemNoun);
     return `No ${items} yet`;
   }
 
   get emptyMessage() {
-    const items = pluralize(this.itemNoun);
+    let items = pluralize(this.itemNoun);
     return `Your ${items} will be listed here. Add your first ${this.itemNoun} to get started.`;
   }
 }

@@ -7,8 +7,8 @@ export default Controller.extend(ListController, {
 
   actions: {
     delete(model) {
-      const type = model.get('identityType');
-      const id = model.id;
+      let type = model.get('identityType');
+      let id = model.id;
       return model
         .destroyRecord()
         .then(() => {
@@ -23,9 +23,9 @@ export default Controller.extend(ListController, {
     },
 
     toggleDisabled(model) {
-      const action = model.get('disabled') ? ['enabled', 'enabling'] : ['disabled', 'disabling'];
-      const type = model.get('identityType');
-      const id = model.id;
+      let action = model.get('disabled') ? ['enabled', 'enabling'] : ['disabled', 'disabling'];
+      let type = model.get('identityType');
+      let id = model.id;
       model.toggleProperty('disabled');
 
       model

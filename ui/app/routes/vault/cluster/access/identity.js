@@ -9,7 +9,7 @@ const MODEL_FROM_PARAM = {
 
 export default Route.extend({
   model(params) {
-    const model = MODEL_FROM_PARAM[params.item_type];
+    let model = MODEL_FROM_PARAM[params.item_type];
     if (!model) {
       const error = new AdapterError();
       set(error, 'httpStatus', 404);

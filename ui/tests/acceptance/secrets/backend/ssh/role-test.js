@@ -29,18 +29,14 @@ module('Acceptance | secrets/ssh', function (hooks) {
     const path = await mountAndNav(assert);
     await editPage.createOTPRole('role');
     await settled();
-    assert.strictEqual(
-      currentRouteName(),
-      'vault.cluster.secrets.backend.show',
-      'redirects to the show page'
-    );
+    assert.equal(currentRouteName(), 'vault.cluster.secrets.backend.show', 'redirects to the show page');
     assert.ok(showPage.generateIsPresent, 'shows the generate button');
 
     await showPage.visit({ backend: path, id: 'role' });
     await settled();
     await showPage.generate();
     await settled();
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.secrets.backend.credentials',
       'navs to the credentials page'
@@ -48,8 +44,8 @@ module('Acceptance | secrets/ssh', function (hooks) {
 
     await listPage.visitRoot({ backend: path });
     await settled();
-    assert.strictEqual(listPage.secrets.length, 1, 'shows role in the list');
-    const secret = listPage.secrets.objectAt(0);
+    assert.equal(listPage.secrets.length, 1, 'shows role in the list');
+    let secret = listPage.secrets.objectAt(0);
     await secret.menuToggle();
     assert.ok(listPage.menuItems.length > 0, 'shows links in the menu');
   });
@@ -63,11 +59,7 @@ module('Acceptance | secrets/ssh', function (hooks) {
     await settled();
     await showPage.deleteRole();
     await settled();
-    assert.strictEqual(
-      currentRouteName(),
-      'vault.cluster.secrets.backend.list-root',
-      'redirects to list page'
-    );
+    assert.equal(currentRouteName(), 'vault.cluster.secrets.backend.list-root', 'redirects to list page');
     assert.ok(listPage.backendIsEmpty, 'no roles listed');
   });
 
@@ -76,18 +68,14 @@ module('Acceptance | secrets/ssh', function (hooks) {
     const path = await mountAndNav(assert);
     await editPage.createOTPRole('role');
     await settled();
-    assert.strictEqual(
-      currentRouteName(),
-      'vault.cluster.secrets.backend.show',
-      'redirects to the show page'
-    );
+    assert.equal(currentRouteName(), 'vault.cluster.secrets.backend.show', 'redirects to the show page');
     assert.ok(showPage.generateIsPresent, 'shows the generate button');
 
     await showPage.visit({ backend: path, id: 'role' });
     await settled();
     await showPage.generate();
     await settled();
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.secrets.backend.credentials',
       'navs to the credentials page'

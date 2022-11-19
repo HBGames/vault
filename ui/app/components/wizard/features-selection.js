@@ -16,13 +16,13 @@ export default Component.extend({
   },
 
   maybeHideFeatures() {
-    const features = this.allFeatures;
+    let features = this.allFeatures;
     features.forEach((feat) => {
       feat.disabled = this.doesNotHavePermission(feat.requiredPermissions);
     });
 
     if (this.showReplication === false) {
-      const feature = this.allFeatures.findBy('key', 'replication');
+      let feature = this.allFeatures.findBy('key', 'replication');
       feature.show = false;
     }
   },
@@ -41,7 +41,7 @@ export default Component.extend({
 
   estimatedTime: computed('selectedFeatures', function () {
     let time = 0;
-    for (const feature of Object.keys(FEATURE_MACHINE_TIME)) {
+    for (let feature of Object.keys(FEATURE_MACHINE_TIME)) {
       if (this.selectedFeatures.includes(feature)) {
         time += FEATURE_MACHINE_TIME[feature];
       }
@@ -137,7 +137,7 @@ export default Component.extend({
 
   actions: {
     saveFeatures() {
-      const wizard = this.wizard;
+      let wizard = this.wizard;
       wizard.saveFeatures(this.selectedFeatures);
       wizard.transitionTutorialMachine('active.select', 'CONTINUE');
     },

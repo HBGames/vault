@@ -15,10 +15,10 @@
 import { helper as buildHelper } from '@ember/component/helper';
 
 export function splitObject(originalObject, array) {
-  const object1 = {};
-  const object2 = {};
+  let object1 = {};
+  let object2 = {};
   // convert object to key's array
-  const keys = Object.keys(originalObject);
+  let keys = Object.keys(originalObject);
   keys.forEach((key) => {
     if (array.includes(key)) {
       object1[key] = originalObject[key];

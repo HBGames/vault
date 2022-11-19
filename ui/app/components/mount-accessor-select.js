@@ -38,7 +38,7 @@ export default class MountAccessorSelect extends Component {
   }
 
   @task *authMethods() {
-    const methods = yield this.store.findAll('auth-method');
+    let methods = yield this.store.findAll('auth-method');
     if (!this.args.value && !this.args.noDefault) {
       const getValue = methods.get('firstObject.accessor');
       this.args.onChange(getValue);

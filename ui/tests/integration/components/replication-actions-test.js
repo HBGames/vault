@@ -38,7 +38,7 @@ module('Integration | Component | replication actions', function (hooks) {
     });
   });
   const confirmInput = (confirmText) => fillIn('[data-test-confirmation-modal-input]', confirmText);
-  const testCases = [
+  let testCases = [
     [
       'dr',
       'primary',
@@ -127,7 +127,7 @@ module('Integration | Component | replication actions', function (hooks) {
     ],
   ];
 
-  for (const [
+  for (let [
     replicationMode,
     clusterMode,
     action,
@@ -176,7 +176,7 @@ module('Integration | Component | replication actions', function (hooks) {
         `
       );
 
-      const selector = oldVersion ? 'h4' : `[data-test-${action}-replication] h4`;
+      let selector = oldVersion ? 'h4' : `[data-test-${action}-replication] h4`;
       assert
         .dom(selector)
         .hasText(headerText, `${testKey}: renders the correct component header (${oldVersion})`);

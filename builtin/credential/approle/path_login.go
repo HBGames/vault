@@ -155,7 +155,7 @@ func (b *backend) pathLoginUpdate(ctx context.Context, req *logical.Request, dat
 			return nil, err
 		}
 		if entry == nil {
-			return logical.ErrorResponse("invalid secret id"), logical.ErrInvalidCredentials
+			return logical.ErrorResponse("invalid secret id"), nil
 		}
 
 		// If a secret ID entry does not have a corresponding accessor

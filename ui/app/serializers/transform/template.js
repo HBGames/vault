@@ -14,7 +14,7 @@ export default ApplicationSerializer.extend({
   },
 
   serialize() {
-    const json = this._super(...arguments);
+    let json = this._super(...arguments);
     if (json.alphabet && Array.isArray(json.alphabet)) {
       // Templates should only ever have one alphabet
       json.alphabet = json.alphabet[0];
@@ -40,8 +40,9 @@ export default ApplicationSerializer.extend({
   },
 
   extractLazyPaginatedData(payload) {
-    return payload.data.keys.map((key) => {
-      const model = {
+    let ret;
+    ret = payload.data.keys.map((key) => {
+      let model = {
         id: key,
       };
       if (payload.backend) {
@@ -49,5 +50,6 @@ export default ApplicationSerializer.extend({
       }
       return model;
     });
+    return ret;
   },
 });

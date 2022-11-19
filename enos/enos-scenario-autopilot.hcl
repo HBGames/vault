@@ -2,7 +2,6 @@ scenario "autopilot" {
   matrix {
     arch            = ["amd64", "arm64"]
     artifact_source = ["local", "crt", "artifactory"]
-    artifact_type   = ["bundle", "package"]
     distro          = ["ubuntu", "rhel"]
     edition         = ["ent"]
     seal            = ["awskms", "shamir"]
@@ -26,6 +25,7 @@ scenario "autopilot" {
       rhel   = provider.enos.rhel
       ubuntu = provider.enos.ubuntu
     }
+    install_artifactory_artifact = local.bundle_path == null
     tags = merge({
       "Project Name" : var.project_name
       "Project" : "Enos",
@@ -36,33 +36,27 @@ scenario "autopilot" {
       arm64 = "t4g.small"
     }
     vault_instance_type = coalesce(var.vault_instance_type, local.vault_instance_types[matrix.arch])
-    vault_license_path  = abspath(var.vault_license_path != null ? var.vault_license_path : joinpath(path.root, "./support/vault.hclic"))
-    vault_install_dir_packages = {
-      rhel   = "/bin"
-      ubuntu = "/usr/bin"
-    }
-    vault_install_dir = matrix.artifact_type == "bundle" ? var.vault_install_dir : local.vault_install_dir_packages[matrix.distro]
   }
 
   step "build_vault" {
     module = "build_${matrix.artifact_source}"
 
     variables {
-      build_tags           = var.vault_local_build_tags != null ? var.vault_local_build_tags : local.build_tags[matrix.edition]
-      bundle_path          = local.bundle_path
-      goarch               = matrix.arch
-      goos                 = "linux"
-      artifactory_host     = matrix.artifact_source == "artifactory" ? var.artifactory_host : null
-      artifactory_repo     = matrix.artifact_source == "artifactory" ? var.artifactory_repo : null
-      artifactory_username = matrix.artifact_source == "artifactory" ? var.artifactory_username : null
-      artifactory_token    = matrix.artifact_source == "artifactory" ? var.artifactory_token : null
-      arch                 = matrix.artifact_source == "artifactory" ? matrix.arch : null
-      product_version      = var.vault_product_version
-      artifact_type        = matrix.artifact_type
-      distro               = matrix.artifact_source == "artifactory" ? matrix.distro : null
-      edition              = matrix.artifact_source == "artifactory" ? matrix.edition : null
-      instance_type        = matrix.artifact_source == "artifactory" ? local.vault_instance_type : null
-      revision             = var.vault_revision
+      build_tags            = try(var.vault_local_build_tags, local.build_tags[matrix.edition])
+      bundle_path           = local.bundle_path
+      goarch                = matrix.arch
+      goos                  = "linux"
+      artifactory_host      = matrix.artifact_source == "artifactory" ? var.artifactory_host : null
+      artifactory_repo      = matrix.artifact_source == "artifactory" ? var.artifactory_repo : null
+      artifactory_username  = matrix.artifact_source == "artifactory" ? var.artifactory_username : null
+      artifactory_token     = matrix.artifact_source == "artifactory" ? var.artifactory_token : null
+      arch                  = matrix.artifact_source == "artifactory" ? matrix.arch : null
+      vault_product_version = var.vault_product_version
+      artifact_type         = matrix.artifact_source == "artifactory" ? var.vault_artifact_type : null
+      distro                = matrix.artifact_source == "artifactory" ? matrix.distro : null
+      edition               = matrix.artifact_source == "artifactory" ? matrix.edition : null
+      instance_type         = matrix.artifact_source == "artifactory" ? local.vault_instance_type : null
+      revision              = var.vault_revision
     }
   }
 
@@ -91,12 +85,10 @@ scenario "autopilot" {
     module = module.read_license
 
     variables {
-      file_name = local.vault_license_path
+      file_name = abspath(joinpath(path.root, "./support/vault.hclic"))
     }
   }
 
-  # This step creates a Vault cluster using a bundle downloaded from
-  # releases.hashicorp.com, with the version specified in var.vault_autopilot_initial_release
   step "create_vault_cluster" {
     module = module.vault_cluster
     depends_on = [
@@ -117,11 +109,10 @@ scenario "autopilot" {
       storage_backend_addl_config = {
         autopilot_upgrade_version = var.vault_autopilot_initial_release.version
       }
-      unseal_method     = matrix.seal
-      vault_install_dir = local.vault_install_dir
-      vault_release     = var.vault_autopilot_initial_release
-      vault_license     = step.read_license.license
-      vpc_id            = step.create_vpc.vpc_id
+      unseal_method = matrix.seal
+      vault_release = var.vault_autopilot_initial_release
+      vault_license = step.read_license.license
+      vpc_id        = step.create_vpc.vpc_id
     }
   }
 
@@ -138,8 +129,6 @@ scenario "autopilot" {
     }
   }
 
-  # This step creates a new Vault cluster using a bundle or package
-  # from the matrix.artifact_source, with the var.vault_product_version
   step "upgrade_vault_cluster_with_autopilot" {
     module = module.vault_cluster
     depends_on = [
@@ -163,10 +152,9 @@ scenario "autopilot" {
       unseal_method               = matrix.seal
       vault_cluster_tag           = step.create_vault_cluster.vault_cluster_tag
       vault_init                  = false
-      vault_install_dir           = local.vault_install_dir
       vault_license               = step.read_license.license
       vault_local_artifact_path   = local.bundle_path
-      vault_artifactory_release   = matrix.artifact_source == "artifactory" ? step.build_vault.vault_artifactory_release : null
+      vault_artifactory_release   = local.install_artifactory_artifact ? step.build_vault.vault_artifactory_release : null
       vault_node_prefix           = "upgrade_node"
       vault_root_token            = step.create_vault_cluster.vault_root_token
       vault_unseal_when_no_init   = matrix.seal == "shamir"
@@ -185,7 +173,6 @@ scenario "autopilot" {
 
     variables {
       vault_autopilot_upgrade_version = matrix.artifact_source == "local" ? step.get_local_metadata.version : var.vault_product_version
-      vault_install_dir               = local.vault_install_dir
       vault_instances                 = step.create_vault_cluster.vault_instances
       vault_root_token                = step.create_vault_cluster.vault_root_token
     }
@@ -203,9 +190,8 @@ scenario "autopilot" {
     }
 
     variables {
-      vault_install_dir = local.vault_install_dir
-      vault_instances   = step.create_vault_cluster.vault_instances
-      vault_root_token  = step.create_vault_cluster.vault_root_token
+      vault_instances  = step.create_vault_cluster.vault_instances
+      vault_root_token = step.create_vault_cluster.vault_root_token
     }
   }
 
@@ -221,9 +207,8 @@ scenario "autopilot" {
     }
 
     variables {
-      vault_install_dir = local.vault_install_dir
-      vault_instances   = step.create_vault_cluster.vault_instances
-      vault_root_token  = step.create_vault_cluster.vault_root_token
+      vault_instances  = step.create_vault_cluster.vault_instances
+      vault_root_token = step.create_vault_cluster.vault_root_token
     }
   }
 

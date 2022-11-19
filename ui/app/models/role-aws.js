@@ -53,8 +53,8 @@ export default Model.extend({
       'A policy is an object in AWS that, when associated with an identity or resource, defines their permissions.',
   }),
   fields: computed('credentialType', function () {
-    const credentialType = this.credentialType;
-    const keysForType = {
+    let credentialType = this.credentialType;
+    let keysForType = {
       iam_user: ['name', 'credentialType', 'policyArns', 'policyDocument'],
       assumed_role: ['name', 'credentialType', 'roleArns', 'policyDocument'],
       federation_token: ['name', 'credentialType', 'policyDocument'],

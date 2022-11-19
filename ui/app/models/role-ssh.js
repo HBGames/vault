@@ -37,7 +37,6 @@ const CA_FIELDS = [
   'allowUserKeyIds',
   'keyIdFormat',
   'notBeforeDuration',
-  'algorithmSigner',
 ];
 
 export default Model.extend({
@@ -118,20 +117,17 @@ export default Model.extend({
   keyIdFormat: attr('string', {
     helpText: 'When supplied, this value specifies a custom format for the key id of a signed certificate',
   }),
-  algorithmSigner: attr('string', {
-    helpText: 'When supplied, this value specifies a signing algorithm for the key',
-  }),
 
   showFields: computed('keyType', function () {
     const keyType = this.keyType;
-    const keys = keyType === 'ca' ? CA_FIELDS.slice(0) : OTP_FIELDS.slice(0);
+    let keys = keyType === 'ca' ? CA_FIELDS.slice(0) : OTP_FIELDS.slice(0);
     return expandAttributeMeta(this, keys);
   }),
 
   fieldGroups: computed('keyType', function () {
-    const numRequired = this.keyType === 'otp' ? 3 : 4;
-    const fields = this.keyType === 'otp' ? [...OTP_FIELDS] : [...CA_FIELDS];
-    const defaultFields = fields.splice(0, numRequired);
+    let numRequired = this.keyType === 'otp' ? 3 : 4;
+    let fields = this.keyType === 'otp' ? [...OTP_FIELDS] : [...CA_FIELDS];
+    let defaultFields = fields.splice(0, numRequired);
     const groups = [
       { default: defaultFields },
       {

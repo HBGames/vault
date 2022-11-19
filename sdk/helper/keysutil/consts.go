@@ -13,8 +13,8 @@ import (
 type HashType uint32
 
 const (
-	HashTypeNone HashType = iota
-	HashTypeSHA1
+	_                     = iota
+	HashTypeSHA1 HashType = iota
 	HashTypeSHA2224
 	HashTypeSHA2256
 	HashTypeSHA2384
@@ -35,7 +35,6 @@ const (
 
 var (
 	HashTypeMap = map[string]HashType{
-		"none":     HashTypeNone,
 		"sha1":     HashTypeSHA1,
 		"sha2-224": HashTypeSHA2224,
 		"sha2-256": HashTypeSHA2256,
@@ -48,7 +47,6 @@ var (
 	}
 
 	HashFuncMap = map[HashType]func() hash.Hash{
-		HashTypeNone:    nil,
 		HashTypeSHA1:    sha1.New,
 		HashTypeSHA2224: sha256.New224,
 		HashTypeSHA2256: sha256.New,
@@ -61,7 +59,6 @@ var (
 	}
 
 	CryptoHashMap = map[HashType]crypto.Hash{
-		HashTypeNone:    0,
 		HashTypeSHA1:    crypto.SHA1,
 		HashTypeSHA2224: crypto.SHA224,
 		HashTypeSHA2256: crypto.SHA256,

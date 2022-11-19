@@ -100,13 +100,13 @@ func GetHexFormatted(buf []byte, sep string) string {
 func ParseHexFormatted(in, sep string) []byte {
 	var ret bytes.Buffer
 	var err error
-	var inBits uint64
+	var inBits int64
 	inBytes := strings.Split(in, sep)
 	for _, inByte := range inBytes {
-		if inBits, err = strconv.ParseUint(inByte, 16, 8); err != nil {
+		if inBits, err = strconv.ParseInt(inByte, 16, 8); err != nil {
 			return nil
 		}
-		ret.WriteByte(uint8(inBits))
+		ret.WriteByte(byte(inBits))
 	}
 	return ret.Bytes()
 }
@@ -1033,10 +1033,7 @@ func selectSignatureAlgorithmForECDSA(pub crypto.PublicKey, signatureBits int) x
 	}
 }
 
-var (
-	oidExtensionBasicConstraints = []int{2, 5, 29, 19}
-	oidExtensionSubjectAltName   = []int{2, 5, 29, 17}
-)
+var oidExtensionBasicConstraints = []int{2, 5, 29, 19}
 
 // CreateCSR creates a CSR with the default rand.Reader to
 // generate a cert/keypair. This is currently only meant
@@ -1211,7 +1208,7 @@ func signCertificate(data *CreationBundle, randReader io.Reader) (*ParsedCertBun
 		certTemplate.URIs = data.CSR.URIs
 
 		for _, name := range data.CSR.Extensions {
-			if !name.Id.Equal(oidExtensionBasicConstraints) && !(len(data.Params.OtherSANs) > 0 && name.Id.Equal(oidExtensionSubjectAltName)) {
+			if !name.Id.Equal(oidExtensionBasicConstraints) {
 				certTemplate.ExtraExtensions = append(certTemplate.ExtraExtensions, name)
 			}
 		}

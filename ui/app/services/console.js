@@ -37,7 +37,7 @@ export default Service.extend({
   commandIndex: null,
 
   shiftCommandIndex(keyCode, setCommandFn = () => {}) {
-    const [newIndex, newCommand] = shiftCommandIndex(keyCode, this.commandHistory, this.commandIndex);
+    let [newIndex, newCommand] = shiftCommandIndex(keyCode, this.commandHistory, this.commandIndex);
     if (newCommand !== undefined && newIndex !== undefined) {
       this.set('commandIndex', newIndex);
       setCommandFn(newCommand);
@@ -45,7 +45,7 @@ export default Service.extend({
   },
 
   clearLog(clearAll = false) {
-    const log = this.log;
+    let log = this.log;
     let history;
     if (!clearAll) {
       history = this.commandHistory.slice();
@@ -58,7 +58,7 @@ export default Service.extend({
   },
 
   logAndOutput(command, logContent) {
-    const log = this.log;
+    let log = this.log;
     if (command) {
       log.pushObject({ type: 'command', content: command });
       this.set('commandIndex', null);
@@ -69,10 +69,10 @@ export default Service.extend({
   },
 
   ajax(operation, path, options = {}) {
-    const verb = VERBS[operation];
-    const adapter = this.adapter();
-    const url = adapter.buildURL(encodePath(path));
-    const { data, wrapTTL } = options;
+    let verb = VERBS[operation];
+    let adapter = this.adapter();
+    let url = adapter.buildURL(encodePath(path));
+    let { data, wrapTTL } = options;
     return adapter.ajax(url, verb, {
       data,
       wrapTTL,
@@ -92,7 +92,7 @@ export default Service.extend({
   },
 
   list(path, data, wrapTTL) {
-    const listPath = ensureTrailingSlash(sanitizePath(path));
+    let listPath = ensureTrailingSlash(sanitizePath(path));
     return this.ajax('list', listPath, {
       data: {
         list: true,

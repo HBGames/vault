@@ -7,13 +7,10 @@ import Ember from 'ember';
 const SPLASH_DELAY = Ember.testing ? 0 : 300;
 
 export default Route.extend({
-  store: service(),
   version: service(),
-
   beforeModel() {
     return this.version.fetchVersion();
   },
-
   model() {
     // hardcode single cluster
     const fixture = {

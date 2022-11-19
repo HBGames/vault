@@ -20,7 +20,7 @@ const setupWrapping = async () => {
   await settled();
   await auth.tokenInput('root').submit();
   await settled();
-  const token = await wrappedAuth();
+  let token = await wrappedAuth();
   await auth.logout();
   await settled();
   return token;
@@ -29,16 +29,16 @@ module('Acceptance | wrapped_token query param functionality', function (hooks) 
   setupApplicationTest(hooks);
 
   test('it authenticates you if the query param is present', async function (assert) {
-    const token = await setupWrapping();
+    let token = await setupWrapping();
     await auth.visit({ wrapped_token: token });
     await settled();
-    assert.strictEqual(currentURL(), '/vault/secrets', 'authenticates and redirects to home');
+    assert.equal(currentURL(), '/vault/secrets', 'authenticates and redirects to home');
   });
 
   test('it authenticates when used with the with=token query param', async function (assert) {
-    const token = await setupWrapping();
+    let token = await setupWrapping();
     await auth.visit({ wrapped_token: token, with: 'token' });
     await settled();
-    assert.strictEqual(currentURL(), '/vault/secrets', 'authenticates and redirects to home');
+    assert.equal(currentURL(), '/vault/secrets', 'authenticates and redirects to home');
   });
 });

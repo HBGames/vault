@@ -74,7 +74,7 @@ BXUV2Uwtxf+QCphnlht9muX2fsLIzDJea0JipWj1uf2H8OZsjE8=
     assert.expect(10);
     await mountAndNav(assert);
     await settled();
-    assert.strictEqual(currentRouteName(), 'vault.cluster.settings.configure-secret-backend.section');
+    assert.equal(currentRouteName(), 'vault.cluster.settings.configure-secret-backend.section');
 
     await page.form.generateCA();
     await settled();
@@ -97,7 +97,7 @@ BXUV2Uwtxf+QCphnlht9muX2fsLIzDJea0JipWj1uf2H8OZsjE8=
     assert.expect(2);
     await mountAndNav(assert);
     await settled();
-    assert.strictEqual(page.form.downloadLinks.length, 0, 'there are no download links');
+    assert.equal(page.form.downloadLinks.length, 0, 'there are no download links');
 
     await page.form.uploadCA(PEM_BUNDLE);
     await settled();
@@ -109,6 +109,7 @@ BXUV2Uwtxf+QCphnlht9muX2fsLIzDJea0JipWj1uf2H8OZsjE8=
 
   test('cert config: sign intermediate and set signed intermediate', async function (assert) {
     assert.expect(3);
+    let csrVal, intermediateCert;
     const rootPath = await mountAndNav(assert, 'root-');
     await page.form.generateCA();
     await settled();
@@ -117,7 +118,7 @@ BXUV2Uwtxf+QCphnlht9muX2fsLIzDJea0JipWj1uf2H8OZsjE8=
     await settled();
     // cache csr
     await click('.masked-input-toggle');
-    const csrVal = document.querySelector('.masked-value').innerText;
+    csrVal = document.querySelector('.masked-value').innerText;
     await page.form.back();
     await settled();
     await page.visit({ backend: rootPath });
@@ -129,7 +130,7 @@ BXUV2Uwtxf+QCphnlht9muX2fsLIzDJea0JipWj1uf2H8OZsjE8=
     assert.dom(SELECTORS.caChain).exists('full CA chain is shown');
     assert.dom(SELECTORS.privateKey).doesNotExist('does not display empty private key');
     await click('.masked-input-toggle');
-    const intermediateCert = document.querySelector('[data-test-masked-input]').innerText;
+    intermediateCert = document.querySelector('[data-test-masked-input]').innerText;
     await page.form.back();
     await settled();
     await page.visit({ backend: intermediatePath });

@@ -72,8 +72,8 @@ module('Acceptance | auth backend list', function (hooks) {
     await triggerKeyEvent('[data-test-textarea]', 'keyup', 65);
     // test for modified helpText on generated token policies
     await click('[data-test-toggle-group="Tokens"]');
-    const policyFormField = document.querySelector('[data-test-input="tokenPolicies"]');
-    const tooltipTrigger = policyFormField.querySelector('[data-test-tool-tip-trigger]');
+    let policyFormField = document.querySelector('[data-test-input="tokenPolicies"]');
+    let tooltipTrigger = policyFormField.querySelector('[data-test-tool-tip-trigger]');
     await triggerEvent(tooltipTrigger, 'mouseenter');
     assert
       .dom('[data-test-info-tooltip-content]')
@@ -102,11 +102,11 @@ module('Acceptance | auth backend list', function (hooks) {
 
     await visit('/vault/access');
 
-    const supportManaged = supportedManagedAuthBackends();
-    const backends = supportedAuthBackends();
+    let supportManaged = supportedManagedAuthBackends();
+    let backends = supportedAuthBackends();
 
-    for (const backend of backends) {
-      const { type } = backend;
+    for (let backend of backends) {
+      let { type } = backend;
 
       if (type !== 'token') {
         await enablePage.enable(type, type);

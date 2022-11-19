@@ -66,19 +66,19 @@ const entityAlias = async function (entityId, accessor, groupId) {
   return consoleComponent.lastLogOutput.includes('Success');
 };
 const setupWebapp = async function (redirect) {
-  const webappName = 'my-webapp';
+  let webappName = 'my-webapp';
   await consoleComponent.runCommands([
     `write identity/oidc/client/${webappName} redirect_uris="${redirect}" assignments="my-assignment" key="sigkey" id_token_ttl="30m" access_token_ttl="1h"`,
     `read -field=client_id identity/oidc/client/${webappName}`,
   ]);
-  const output = consoleComponent.lastLogOutput;
+  let output = consoleComponent.lastLogOutput;
   if (output.includes('error occurred')) {
     throw new Error(`OIDC setup failed: ${output}`);
   }
   return output;
 };
 const setupProvider = async function (clientId) {
-  const providerName = `my-provider`;
+  let providerName = `my-provider`;
   await consoleComponent.runCommands(
     `write identity/oidc/provider/${providerName} allowed_client_ids="${clientId}" scopes="user,groups"`
   );
@@ -86,7 +86,7 @@ const setupProvider = async function (clientId) {
 };
 
 const getAuthzUrl = (providerName, redirect, clientId, params) => {
-  const queryParams = {
+  let queryParams = {
     client_id: clientId,
     nonce: 'abc123',
     redirect_uri: encodeURIComponent(redirect),
@@ -95,7 +95,7 @@ const getAuthzUrl = (providerName, redirect, clientId, params) => {
     state: 'foobar',
     ...params,
   };
-  const queryString = Object.keys(queryParams).reduce((prev, key, idx) => {
+  let queryString = Object.keys(queryParams).reduce((prev, key, idx) => {
     if (idx === 0) {
       return `${prev}${key}=${queryParams[key]}`;
     }
@@ -108,11 +108,11 @@ const setupOidc = async function () {
   const callback = 'http://127.0.0.1:8251/callback';
   const entityId = await oidcEntity('oidc', OIDC_POLICY);
   const groupId = await oidcGroup(entityId);
-  const authMethodPath = `userpass-${new Date().getTime()}`;
+  let authMethodPath = `userpass-${new Date().getTime()}`;
   const accessor = await authAccessor(authMethodPath);
   await entityAlias(entityId, accessor, groupId);
   const clientId = await setupWebapp(callback);
-  const providerName = await setupProvider(clientId);
+  let providerName = await setupProvider(clientId);
   return {
     providerName,
     callback,
@@ -131,11 +131,11 @@ module('Acceptance | oidc provider', function (hooks) {
   });
 
   test('OIDC Provider logs in and redirects correctly', async function (assert) {
-    const { providerName, callback, clientId, authMethodPath } = await setupOidc();
+    let { providerName, callback, clientId, authMethodPath } = await setupOidc();
 
     await logout.visit();
     await settled();
-    const url = getAuthzUrl(providerName, callback, clientId);
+    let url = getAuthzUrl(providerName, callback, clientId);
     await visit(url);
 
     assert.ok(currentURL().startsWith('/vault/auth'), 'redirects to auth when no token');
@@ -155,7 +155,7 @@ module('Acceptance | oidc provider', function (hooks) {
     await authFormComponent.password(USER_PASSWORD);
     await authFormComponent.login();
     await settled();
-    assert.strictEqual(currentURL(), url, 'URL is as expected after login');
+    assert.equal(currentURL(), url, 'URL is as expected after login');
     assert.dom('[data-test-oidc-redirect]').exists('redirect text exists');
     assert
       .dom('[data-test-oidc-redirect]')

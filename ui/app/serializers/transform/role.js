@@ -2,8 +2,9 @@ import ApplicationSerializer from '../application';
 
 export default ApplicationSerializer.extend({
   extractLazyPaginatedData(payload) {
-    return payload.data.keys.map((key) => {
-      const model = {
+    let ret;
+    ret = payload.data.keys.map((key) => {
+      let model = {
         id: key,
       };
       if (payload.backend) {
@@ -11,5 +12,6 @@ export default ApplicationSerializer.extend({
       }
       return model;
     });
+    return ret;
   },
 });

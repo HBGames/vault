@@ -44,8 +44,7 @@
       </ConfirmAction>
       <div class="toolbar-separator"></div>
       <ToolbarLink
-        @route="vault.cluster.access.method.item.edit"
-        @models={{array this.itemType this.model.id}}
+        @params={{array "vault.cluster.access.method.item.edit" this.itemType this.model.id}}
         data-test-configure-link="true"
       >
         Edit

@@ -1,7 +1,6 @@
 package command
 
 import (
-	"errors"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -216,10 +215,6 @@ func TestSecretsEnableCommand_Run(t *testing.T) {
 		for _, f := range files {
 			if f.IsDir() {
 				if f.Name() == "plugin" {
-					continue
-				}
-				if _, err := os.Stat("../builtin/logical/" + f.Name() + "/backend.go"); errors.Is(err, os.ErrNotExist) {
-					// Skip ext test packages (fake plugins without backends).
 					continue
 				}
 				backends = append(backends, f.Name())

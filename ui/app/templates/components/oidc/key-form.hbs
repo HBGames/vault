@@ -58,7 +58,7 @@
     {{#if (eq this.radioCardGroupValue "limited")}}
       <SearchSelect
         @id="allowedClientIds"
-        @label="Application name"
+        @subLabel="Application name"
         @subText="Select which applications are allowed to use this key. Only applications that currently reference this key will appear in the dropdown."
         @models={{array "oidc/client"}}
         @inputValue={{@model.allowedClientIds}}

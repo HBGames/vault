@@ -7,7 +7,6 @@ export default Component.extend({
   classNames: ['ui-wizard-container'],
   wizard: service(),
   auth: service(),
-  router: service(),
 
   shouldRender: or('auth.currentToken', 'wizard.showWhenUnauthenticated'),
   currentState: alias('wizard.currentState'),
@@ -17,7 +16,6 @@ export default Component.extend({
   componentState: alias('wizard.componentState'),
   nextFeature: alias('wizard.nextFeature'),
   nextStep: alias('wizard.nextStep'),
-  currentRouteName: alias('router.currentRouteName'),
 
   actions: {
     dismissWizard() {
@@ -25,8 +23,8 @@ export default Component.extend({
     },
 
     advanceWizard() {
-      const inInit = matchesState('init', this.wizard.currentState);
-      const event = inInit ? this.wizard.initEvent || 'CONTINUE' : 'CONTINUE';
+      let inInit = matchesState('init', this.wizard.currentState);
+      let event = inInit ? this.wizard.initEvent || 'CONTINUE' : 'CONTINUE';
       this.wizard.transitionTutorialMachine(this.currentState, event);
     },
 

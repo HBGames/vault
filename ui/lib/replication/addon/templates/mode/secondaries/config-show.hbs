@@ -2,16 +2,14 @@
   <ToolbarActions>
     {{#if this.model.config.mode}}
       <ToolbarLink
-        @route="mode.secondaries.config-edit"
-        @model={{this.model.config.id}}
+        @params={{array "mode.secondaries.config-edit" this.model.config.id}}
         data-test-replication-link="edit-mount-config"
       >
         Edit config
       </ToolbarLink>
     {{else}}
       <ToolbarLink
-        @route="mode.secondaries.config-create"
-        @params={{this.model.config.id}}
+        @params={{array "mode.secondaries.config-create" this.model.config.id}}
         data-test-replication-link="create-mount-config"
       >
         Create config

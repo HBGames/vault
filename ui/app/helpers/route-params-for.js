@@ -4,7 +4,7 @@ import { inject as service } from '@ember/service';
 export default Helper.extend({
   permissions: service(),
   compute([navItem]) {
-    const permissions = this.permissions;
+    let permissions = this.permissions;
     return permissions.navPathParams(navItem);
   },
 });

@@ -1,24 +1,18 @@
-<div
-  {{did-insert (perform this.fetchOptions)}}
-  id={{@id}}
-  class="field search-select {{if @displayInherit 'display-inherit'}}"
-  data-test-search-select-with-modal
-  ...attributes
->
+<div {{did-insert this.fetchOptions}} ...attributes data-test-search-select-with-modal>
   {{#if this.shouldUseFallback}}
     {{component
       @fallbackComponent
-      label=@label
+      label=(or @label @subLabel)
       subText=@subText
       onChange=@onChange
       inputValue=@inputValue
       helpText=@helpText
-      placeholder=@placeholder
+      placeHolder=@placeHolder
       id=@id
     }}
   {{else}}
     {{#if @label}}
-      <label for={{@id}} class={{or @labelClass "is-label"}} data-test-field-label>
+      <label for={{@id}} class="is-label" data-test-field-label>
         {{@label}}
         {{#if @helpText}}
           <InfoTooltip>{{@helpText}}</InfoTooltip>
@@ -26,15 +20,16 @@
       </label>
     {{/if}}
     {{#if @subText}}
-      <p data-test-modal-subtext class="sub-text">{{@subText}}</p>
+      <p class="sub-text">{{@subText}}</p>
     {{/if}}
-    {{#unless this.hidePowerSelect}}
+    {{! template-lint-configure simple-unless "warn" }}
+    {{#unless (gte this.selectedOptions.length @selectLimit)}}
       <PowerSelect
         @eventType="click"
         @placeholder={{@placeholder}}
         @searchEnabled={{true}}
         @search={{this.searchAndSuggest}}
-        @options={{this.dropdownOptions}}
+        @options={{this.allOptions}}
         @onChange={{this.selectOrCreate}}
         @placeholderComponent={{component "search-select-placeholder"}}
         @verticalPosition="below"
@@ -42,22 +37,20 @@
       >
         {{#if this.shouldRenderName}}
           {{option.name}}
-          {{#unless option.__isSuggestion__}}
-            <small class="search-select-list-key" data-test-smaller-id="true">
-              {{option.id}}
-            </small>
-          {{/unless}}
+          <small class="search-select-list-key" data-test-smaller-id="true">
+            {{option.id}}
+          </small>
         {{else}}
           {{option.id}}
         {{/if}}
       </PowerSelect>
     {{/unless}}
     <ul class="search-select-list">
-      {{#each this.selectedOptions as |selected index|}}
-        <li class="search-select-list-item" data-test-selected-option={{index}}>
+      {{#each this.selectedOptions as |selected|}}
+        <li class="search-select-list-item" data-test-selected-option="true">
           {{#if this.shouldRenderName}}
             {{selected.name}}
-            <small class="search-select-list-key" data-test-smaller-id={{index}}>
+            <small class="search-select-list-key" data-test-smaller-id="true">
               {{selected.id}}
             </small>
           {{else}}
@@ -80,9 +73,7 @@
     </ul>
 
   {{/if}}
-
-  {{! wait until user has selected 'create a new item' before rendering modal}}
-  {{#if this.nameInput}}
+  {{#if this.newModelRecord}}
     <Modal
       @title="Create new {{singularize @id}}"
       @onClose={{action (mut this.showModal) false}}
@@ -91,17 +82,21 @@
       @showCloseButton={{false}}
     >
       <section class="modal-card-body">
-        {{#if @modalSubtext}}
-          <p class="has-bottom-margin-s" data-test-modal-subtext>
-            {{@modalSubtext}}
-          </p>
-        {{/if}}
+        <p class="has-bottom-margin-s" data-test-modal-subtext>
+          {{@modalSubtext}}
+        </p>
         {{#if (has-block)}}
           {{yield}}
         {{else}}
-          {{! dynamically render template from modal-form/ folder}}
+          {{! dynamically render passed in form component }}
           {{! form must receive an @onSave and @onCancel arg that executes the callback}}
-          {{component @modalFormTemplate nameInput=this.nameInput onSave=this.resetModal onCancel=this.resetModal}}
+          {{component
+            @modalFormComponent
+            model=this.newModelRecord
+            onSave=this.resetModal
+            onCancel=this.resetModal
+            isInline=true
+          }}
         {{/if}}
       </section>
     </Modal>

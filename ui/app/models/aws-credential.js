@@ -52,8 +52,8 @@ export default Model.extend({
   securityToken: attr('string'),
 
   attrs: computed('credentialType', 'accessKey', 'securityToken', function () {
-    const type = this.credentialType;
-    const fieldsForType = {
+    let type = this.credentialType;
+    let fieldsForType = {
       iam_user: ['credentialType'],
       assumed_role: ['credentialType', 'ttl', 'roleArn'],
       federation_token: ['credentialType', 'ttl'],

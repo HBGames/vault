@@ -59,21 +59,21 @@ module('Integration | Component | string list', function (hooks) {
   test('it renders inputValue from a blank array', async function (assert) {
     assert.expect(2);
     this.set('inputValue', []);
-    await render(hbs`<StringList @inputValue={{this.inputValue}} />`);
+    await render(hbs`<StringList @inputValue={{inputValue}} />`);
     assertBlank(assert);
   });
 
   test('it renders inputValue array with a single item', async function (assert) {
     assert.expect(3);
     this.set('inputValue', ['foo']);
-    await render(hbs`<StringList @inputValue={{this.inputValue}} />`);
+    await render(hbs`<StringList @inputValue={{inputValue}} />`);
     assertFoo(assert);
   });
 
   test('it renders inputValue array with a multiple items', async function (assert) {
     assert.expect(4);
     this.set('inputValue', ['foo', 'bar']);
-    await render(hbs`<StringList @inputValue={{this.inputValue}} />`);
+    await render(hbs`<StringList @inputValue={{inputValue}} />`);
     assertFooBar(assert);
   });
 
@@ -101,7 +101,7 @@ module('Integration | Component | string list', function (hooks) {
     this.set('onChange', function (val) {
       assert.deepEqual(val, ['foo', 'bar'], 'calls onChange with expected value');
     });
-    await render(hbs`<StringList @inputValue={{this.inputValue}} @onChange={{this.onChange}} />`);
+    await render(hbs`<StringList @inputValue={{inputValue}} @onChange={{onChange}} />`);
     await fillIn('[data-test-string-list-input="1"]', 'bar');
     await triggerKeyEvent('[data-test-string-list-input="1"]', 'keyup', 14);
   });
@@ -110,11 +110,9 @@ module('Integration | Component | string list', function (hooks) {
     assert.expect(2);
     this.set('inputValue', 'foo');
     this.set('onChange', function (val) {
-      assert.strictEqual(val, 'foo,bar', 'calls onChange with expected value');
+      assert.equal(val, 'foo,bar', 'calls onChange with expected value');
     });
-    await render(
-      hbs`<StringList @type="string" @inputValue={{this.inputValue}} @onChange={{this.onChange}}/>`
-    );
+    await render(hbs`<StringList @inputValue={{inputValue}} @onChange={{onChange}}/>`);
     await fillIn('[data-test-string-list-input="1"]', 'bar');
     await triggerKeyEvent('[data-test-string-list-input="1"]', 'keyup', 14);
   });
@@ -123,9 +121,9 @@ module('Integration | Component | string list', function (hooks) {
     assert.expect(4);
     this.set('inputValue', ['foo', 'bar']);
     this.set('onChange', function (val) {
-      assert.deepEqual(val, ['bar'], 'calls onChange with expected value');
+      assert.equal(val, 'bar', 'calls onChange with expected value');
     });
-    await render(hbs`<StringList @inputValue={{this.inputValue}} @onChange={{this.onChange}} />`);
+    await render(hbs`<StringList @inputValue={{inputValue}} @onChange={{onChange}} />`);
 
     await click('[data-test-string-list-row="0"] [data-test-string-list-button="delete"]');
     assert.dom('[data-test-string-list-input]').exists({ count: 2 }, 'renders 2 inputs');
@@ -136,7 +134,7 @@ module('Integration | Component | string list', function (hooks) {
   test('it replaces helpText if name is tokenBoundCidrs', async function (assert) {
     assert.expect(1);
     await render(hbs`<StringList @label={{'blah'}} @helpText={{'blah'}} @attrName={{'tokenBoundCidrs'}} />`);
-    const tooltipTrigger = document.querySelector('[data-test-tool-tip-trigger]');
+    let tooltipTrigger = document.querySelector('[data-test-tool-tip-trigger]');
     await triggerEvent(tooltipTrigger, 'mouseenter');
     assert
       .dom('[data-test-info-tooltip-content]')

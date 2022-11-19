@@ -27,17 +27,17 @@ export default Service.extend({
     // uses the adapter and the raw response here since
     // models get wiped when switching namespaces and we
     // want to keep track of these separately
-    const store = this.store;
-    const adapter = store.adapterFor('namespace');
-    const userRoot = this.auth.authData.userRootNamespace;
+    let store = this.store;
+    let adapter = store.adapterFor('namespace');
+    let userRoot = this.auth.authData.userRootNamespace;
     try {
-      const ns = yield adapter.findAll(store, 'namespace', null, {
+      let ns = yield adapter.findAll(store, 'namespace', null, {
         adapterOptions: {
           forUser: true,
           namespace: userRoot,
         },
       });
-      const keys = ns.data.keys || [];
+      let keys = ns.data.keys || [];
       this.set(
         'accessibleNamespaces',
         keys.map((n) => {

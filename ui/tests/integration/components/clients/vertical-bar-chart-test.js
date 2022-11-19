@@ -22,8 +22,8 @@ module('Integration | Component | clients/vertical-bar-chart', function (hooks) 
     await render(hbs`   
     <div class="chart-container-wide">
       <Clients::VerticalBarChart 
-        @dataset={{this.barChartData}} 
-        @chartLegend={{this.chartLegend}} 
+        @dataset={{barChartData}} 
+        @chartLegend={{chartLegend}} 
       />
     </div>
     `);
@@ -38,9 +38,9 @@ module('Integration | Component | clients/vertical-bar-chart', function (hooks) 
       assert.dom(e).hasText(`${barChartData[i].month}`, `renders x-axis label: ${barChartData[i].month}`);
     });
 
-    for (const [i, bar] of tooltipHoverBars.entries()) {
+    for (let [i, bar] of tooltipHoverBars.entries()) {
       await triggerEvent(bar, 'mouseover');
-      const tooltip = document.querySelector('.ember-modal-dialog');
+      let tooltip = document.querySelector('.ember-modal-dialog');
       assert
         .dom(tooltip)
         .includesText(
@@ -60,8 +60,8 @@ module('Integration | Component | clients/vertical-bar-chart', function (hooks) 
     await render(hbs`   
     <div class="chart-container-wide">
       <Clients::VerticalBarChart 
-        @dataset={{this.barChartData}} 
-        @chartLegend={{this.chartLegend}} 
+        @dataset={{barChartData}} 
+        @chartLegend={{chartLegend}} 
       />
     </div>
     `);
@@ -77,9 +77,9 @@ module('Integration | Component | clients/vertical-bar-chart', function (hooks) 
       assert.dom(e).hasText(`${barChartData[i].month}`, `renders x-axis label: ${barChartData[i].month}`);
     });
 
-    for (const [i, bar] of tooltipHoverBars.entries()) {
+    for (let [i, bar] of tooltipHoverBars.entries()) {
       await triggerEvent(bar, 'mouseover');
-      const tooltip = document.querySelector('.ember-modal-dialog');
+      let tooltip = document.querySelector('.ember-modal-dialog');
       assert
         .dom(tooltip)
         .includesText(

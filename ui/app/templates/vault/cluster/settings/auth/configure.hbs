@@ -14,7 +14,7 @@
 
 <Toolbar>
   <ToolbarActions>
-    <ToolbarLink @route="vault.cluster.access.method" @model={{this.model.id}} data-test-backend-view-link>
+    <ToolbarLink @params={{array "vault.cluster.access.method" this.model.id}} data-test-backend-view-link={{true}}>
       View method
     </ToolbarLink>
   </ToolbarActions>

@@ -22,12 +22,12 @@ export default Base.extend({
   },
 
   errorMessage(e, model, groupArray, memberId) {
-    const error = e.errors ? e.errors.join(' ') : e.message;
+    let error = e.errors ? e.errors.join(' ') : e.message;
     return `There was a problem removing '${memberId}' from the group - ${error}`;
   },
 
   transaction(model, groupArray, memberId) {
-    const members = model.get(groupArray);
+    let members = model.get(groupArray);
     model.set(groupArray, members.without(memberId));
     return model.save();
   },

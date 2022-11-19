@@ -5,7 +5,7 @@ import ApplicationSerializer from './application';
 export default ApplicationSerializer.extend({
   secretDataPath: 'data.data',
   normalizeItems(payload) {
-    const path = this.secretDataPath;
+    let path = this.secretDataPath;
     // move response that is the contents of the secret from the dataPath
     // to `secret_data` so it will be `secretData` in the model
     payload.secret_data = get(payload, path);
@@ -17,7 +17,7 @@ export default ApplicationSerializer.extend({
     return payload;
   },
   serialize(snapshot) {
-    const secret = snapshot.belongsTo('secret');
+    let secret = snapshot.belongsTo('secret');
     // if both models failed to read from the server, we need to write without CAS
     if (secret.record.failedServerRead && snapshot.record.failedServerRead) {
       return {

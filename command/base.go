@@ -518,10 +518,9 @@ func (c *BaseCommand) flagSet(bit FlagSetBit) *FlagSets {
 					Target:     &c.flagFormat,
 					Default:    "table",
 					EnvVar:     EnvVaultFormat,
-					Completion: complete.PredictSet("table", "json", "yaml", "pretty", "raw"),
+					Completion: complete.PredictSet("table", "json", "yaml", "pretty"),
 					Usage: `Print the output in the given format. Valid formats
-						are "table", "json", "yaml", or "pretty". "raw" is allowed
-						for 'vault read' operations only.`,
+						are "table", "json", "yaml", or "pretty".`,
 				})
 			}
 
@@ -582,14 +581,9 @@ func (f *FlagSets) Completions() complete.Flags {
 	return f.completions
 }
 
-type (
-	ParseOptions              interface{}
-	ParseOptionAllowRawFormat bool
-)
-
 // Parse parses the given flags, returning any errors.
 // Warnings, if any, regarding the arguments format are sent to stdout
-func (f *FlagSets) Parse(args []string, opts ...ParseOptions) error {
+func (f *FlagSets) Parse(args []string) error {
 	err := f.mainSet.Parse(args)
 
 	warnings := generateFlagWarnings(f.Args())
@@ -597,12 +591,7 @@ func (f *FlagSets) Parse(args []string, opts ...ParseOptions) error {
 		f.ui.Warn(warnings)
 	}
 
-	if err != nil {
-		return err
-	}
-
-	// Now surface any other errors.
-	return generateFlagErrors(f, opts...)
+	return err
 }
 
 // Parsed reports whether the command-line flags have been parsed.

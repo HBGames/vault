@@ -48,13 +48,13 @@ module('Integration | Component | oidc/key-form', function (hooks) {
     assert.dom('[data-test-oidc-key-title]').hasText('Create key', 'Form title renders correct text');
     assert.dom(SELECTORS.keySaveButton).hasText('Create', 'Save button has correct text');
     assert.dom('[data-test-input="algorithm"]').hasValue('RS256', 'default algorithm is correct');
-    assert.strictEqual(findAll('[data-test-field]').length, 4, 'renders all input fields');
+    assert.equal(findAll('[data-test-field]').length, 4, 'renders all input fields');
 
     // check validation errors
     await fillIn('[data-test-input="name"]', ' ');
     await click(SELECTORS.keySaveButton);
 
-    const validationErrors = findAll(SELECTORS.inlineAlert);
+    let validationErrors = findAll(SELECTORS.inlineAlert);
     assert
       .dom(validationErrors[0])
       .hasText('Name is required. Name cannot contain whitespace.', 'Validation messages are shown for name');
@@ -101,7 +101,7 @@ module('Integration | Component | oidc/key-form', function (hooks) {
       .dom('[data-test-component="search-select"]#allowedClientIds')
       .exists('Limited radio button shows clients search select');
     await click('[data-test-component="search-select"]#allowedClientIds .ember-basic-dropdown-trigger');
-    assert.strictEqual(findAll('li.ember-power-select-option').length, 1, 'dropdown only renders one option');
+    assert.equal(findAll('li.ember-power-select-option').length, 1, 'dropdown only renders one option');
     assert
       .dom('li.ember-power-select-option')
       .hasTextContaining('app-1', 'dropdown contains client that references key');
@@ -149,7 +149,7 @@ module('Integration | Component | oidc/key-form', function (hooks) {
 
     await click('label[for=limited]');
     await click(SELECTORS.keyCancelButton);
-    assert.strictEqual(this.model.allowed_client_ids, undefined, 'Model attributes rolled back on cancel');
+    assert.equal(this.model.allowed_client_ids, undefined, 'Model attributes rolled back on cancel');
   });
 
   test('it should render fallback for search select', async function (assert) {

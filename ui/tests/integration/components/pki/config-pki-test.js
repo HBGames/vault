@@ -31,14 +31,14 @@ module('Integration | Component | config pki', function (hooks) {
   const setupAndRender = async function (context, config, section = 'tidy') {
     context.set('config', config);
     context.set('section', section);
-    await context.render(hbs`<Pki::ConfigPki @section={{this.section}} @config={{this.config}} />`);
+    await context.render(hbs`<Pki::ConfigPki @section={{section}} @config={{config}} />`);
   };
 
   test('it renders tidy section', async function (assert) {
     await setupAndRender(this, this.config);
     assert.ok(component.text.startsWith('You can tidy up the backend'));
     assert.notOk(component.hasTitle, 'No title for tidy section');
-    assert.strictEqual(component.fields.length, 3, 'renders all three tidy fields');
+    assert.equal(component.fields.length, 3, 'renders all three tidy fields');
     assert.ok(component.fields.objectAt(0).labelText, 'Tidy the Certificate Store');
     assert.ok(component.fields.objectAt(1).labelText, 'Tidy the Revocation List (CRL)');
     assert.ok(component.fields.objectAt(1).labelText, 'Safety buffer');
@@ -48,7 +48,7 @@ module('Integration | Component | config pki', function (hooks) {
     await setupAndRender(this, this.config, 'crl');
     assert.false(this.config.disable, 'CRL config defaults disable=false');
     assert.ok(component.hasTitle, 'renders form title');
-    assert.strictEqual(component.title, 'Certificate Revocation List (CRL) config');
+    assert.equal(component.title, 'Certificate Revocation List (CRL) config');
     assert.ok(
       component.text.startsWith('Set the duration for which the generated CRL'),
       'renders form subtext'
@@ -76,7 +76,7 @@ module('Integration | Component | config pki', function (hooks) {
   test('it renders urls section', async function (assert) {
     await setupAndRender(this, this.config, 'urls');
     assert.notOk(component.hasTitle, 'No title for urls section');
-    assert.strictEqual(component.fields.length, 3);
+    assert.equal(component.fields.length, 3);
     assert.ok(component.fields.objectAt(0).labelText, 'Issuing certificates');
     assert.ok(component.fields.objectAt(1).labelText, 'CRL Distribution Points');
     assert.ok(component.fields.objectAt(2).labelText, 'OCSP Servers');
@@ -91,7 +91,7 @@ module('Integration | Component | config pki', function (hooks) {
     this.set(
       'config',
       this.mockConfigSave((options) => {
-        assert.strictEqual(options.adapterOptions.method, section, 'method passed to save');
+        assert.equal(options.adapterOptions.method, section, 'method passed to save');
         assert.deepEqual(
           options.adapterOptions.fields,
           ['tidyCertStore', 'tidyRevocationList', 'safetyBuffer'],
@@ -101,9 +101,7 @@ module('Integration | Component | config pki', function (hooks) {
       })
     );
     this.set('section', section);
-    await render(
-      hbs`<Pki::ConfigPki @section={{this.section}} @config={{this.config}} @onRefresh={{this.onRefresh}} />`
-    );
+    await render(hbs`<Pki::ConfigPki @section={{section}} @config={{config}} @onRefresh={{onRefresh}} />`);
 
     component.submit();
   });
@@ -117,22 +115,20 @@ module('Integration | Component | config pki', function (hooks) {
     this.set(
       'config',
       this.mockConfigSave((options) => {
-        assert.strictEqual(options.adapterOptions.method, section, 'method passed to save');
+        assert.equal(options.adapterOptions.method, section, 'method passed to save');
         assert.deepEqual(options.adapterOptions.fields, ['expiry', 'disable'], 'CRL fields passed to save');
         return resolve();
       })
     );
     this.set('section', section);
-    await render(
-      hbs`<Pki::ConfigPki @section={{this.section}} @config={{this.config}} @onRefresh={{this.onRefresh}} />`
-    );
+    await render(hbs`<Pki::ConfigPki @section={{section}} @config={{config}} @onRefresh={{onRefresh}} />`);
     component.submit();
   });
 
   test('it correctly sets toggle when initial CRL config is disable=true', async function (assert) {
     assert.expect(3);
     // change default config attrs
-    const configDisabled = this.config;
+    let configDisabled = this.config;
     configDisabled.expiry = '1m';
     configDisabled.disable = true;
     await setupAndRender(this, configDisabled, 'crl');

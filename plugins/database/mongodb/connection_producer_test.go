@@ -14,11 +14,13 @@ import (
 	"time"
 
 	"github.com/hashicorp/vault/helper/testhelpers/certhelpers"
+	"github.com/hashicorp/vault/helper/testhelpers/mongodb"
 	dbplugin "github.com/hashicorp/vault/sdk/database/dbplugin/v5"
 	"github.com/ory/dockertest"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"gopkg.in/mgo.v2"
 )
 
 func TestInit_clientTLS(t *testing.T) {
@@ -213,12 +215,19 @@ func startMongoWithTLS(t *testing.T, version string, confDir string) (retURL str
 	// exponential backoff-retry
 	err = pool.Retry(func() error {
 		var err error
-		ctx, _ := context.WithTimeout(context.Background(), 1*time.Minute)
-		client, err := mongo.Connect(ctx, options.Client().ApplyURI(retURL))
-		if err = client.Disconnect(ctx); err != nil {
-			t.Fatal()
+		dialInfo, err := mongodb.ParseMongoURL(retURL)
+		if err != nil {
+			return err
 		}
-		return client.Ping(ctx, readpref.Primary())
+
+		session, err := mgo.DialWithInfo(dialInfo)
+		if err != nil {
+			return err
+		}
+		defer session.Close()
+		session.SetSyncTimeout(1 * time.Minute)
+		session.SetSocketTimeout(1 * time.Minute)
+		return session.Ping()
 	})
 	if err != nil {
 		cleanup()

@@ -1598,7 +1598,7 @@ var chainBuildingTestCases = []CBTestScenario{
 func Test_CAChainBuilding(t *testing.T) {
 	t.Parallel()
 	for testIndex, testCase := range chainBuildingTestCases {
-		b, s := CreateBackendWithStorage(t)
+		b, s := createBackendWithStorage(t)
 
 		knownKeys := make(map[string]string)
 		knownCerts := make(map[string]string)
@@ -1620,7 +1620,7 @@ func BenchmarkChainBuilding(benchies *testing.B) {
 			bench.StopTimer()
 			bench.ResetTimer()
 
-			b, s := CreateBackendWithStorage(bench)
+			b, s := createBackendWithStorage(bench)
 
 			knownKeys := make(map[string]string)
 			knownCerts := make(map[string]string)

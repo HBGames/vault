@@ -1,7 +1,6 @@
 import ApplicationAdapter from '../application';
 import { encodePath } from 'vault/utils/path-encoding-helpers';
 import ControlGroupError from '../../lib/control-group-error';
-import { inject as service } from '@ember/service';
 
 function pickKeys(obj, picklist) {
   const data = {};
@@ -12,9 +11,7 @@ function pickKeys(obj, picklist) {
   });
   return data;
 }
-
 export default class KeymgmtKeyAdapter extends ApplicationAdapter {
-  @service store;
   namespace = 'v1';
 
   pathForType() {
@@ -47,13 +44,13 @@ export default class KeymgmtKeyAdapter extends ApplicationAdapter {
 
   _updateKey(backend, name, serialized) {
     // Only these two attributes are allowed to be updated
-    const data = pickKeys(serialized, ['deletion_allowed', 'min_enabled_version']);
+    let data = pickKeys(serialized, ['deletion_allowed', 'min_enabled_version']);
     return this.ajax(this.url(backend, name), 'PUT', { data });
   }
 
   _createKey(backend, name, serialized) {
     // Only type is allowed on create
-    const data = pickKeys(serialized, ['type']);
+    let data = pickKeys(serialized, ['type']);
     return this.ajax(this.url(backend, name), 'POST', { data });
   }
 
@@ -159,7 +156,7 @@ export default class KeymgmtKeyAdapter extends ApplicationAdapter {
   }
 
   async rotateKey(backend, id) {
-    const keyModel = this.store.peekRecord('keymgmt/key', id);
+    let keyModel = this.store.peekRecord('keymgmt/key', id);
     const result = await this.ajax(this.url(backend, id, 'ROTATE'), 'PUT');
     await keyModel.reload();
     return result;

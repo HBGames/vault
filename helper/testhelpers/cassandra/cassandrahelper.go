@@ -90,10 +90,9 @@ func PrepareTestContainer(t *testing.T, opts ...ContainerOpt) (Host, func()) {
 	}
 
 	containerCfg := &containerConfig{
-		imageName:     "docker.mirror.hashicorp.services/library/cassandra",
-		containerName: "cassandra",
-		version:       "3.11",
-		env:           []string{"CASSANDRA_BROADCAST_ADDRESS=127.0.0.1"},
+		imageName: "cassandra",
+		version:   "3.11",
+		env:       []string{"CASSANDRA_BROADCAST_ADDRESS=127.0.0.1"},
 	}
 
 	for _, opt := range opts {

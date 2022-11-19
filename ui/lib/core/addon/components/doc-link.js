@@ -1,8 +1,10 @@
-import ExternalLink from './external-link';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import hbs from 'htmlbars-inline-precompile';
 
 /**
  * @module DocLink
- * `DocLink` components are used to render anchor links to relevant Vault documentation at vaultproject.io.
+ * `DocLink` components are used to render anchor links to relevant Vault documentation.
  *
  * @example
  * ```js
@@ -12,10 +14,20 @@ import ExternalLink from './external-link';
  * @param path="/"{String} - The path to documentation on vaultproject.io that the component should link to.
  *
  */
-export default class DocLinkComponent extends ExternalLink {
-  host = 'https://www.vaultproject.io';
 
-  get href() {
-    return `${this.host}${this.args.path}`;
-  }
-}
+export default Component.extend({
+  tagName: 'a',
+  classNames: ['doc-link'],
+  attributeBindings: ['target', 'rel', 'href'],
+
+  layout: hbs`{{yield}}`,
+
+  target: '_blank',
+  rel: 'noreferrer noopener',
+  host: 'https://www.vaultproject.io',
+
+  path: '/',
+  href: computed('host', 'path', function () {
+    return `${this.host}${this.path}`;
+  }),
+});

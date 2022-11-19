@@ -1,16 +1,12 @@
 import Route from '@ember/routing/route';
 import { hash } from 'rsvp';
-import { inject as service } from '@ember/service';
 
 export default Route.extend({
-  store: service(),
   type: '',
-
   enginePathParam() {
-    const { backend } = this.paramsFor('vault.cluster.secrets.backend');
+    let { backend } = this.paramsFor('vault.cluster.secrets.backend');
     return backend;
   },
-
   async fetchConnection(queryOptions) {
     try {
       return await this.store.query('database/connection', queryOptions);
@@ -18,7 +14,6 @@ export default Route.extend({
       return e.httpStatus;
     }
   },
-
   async fetchAllRoles(queryOptions) {
     try {
       return await this.store.query('database/role', queryOptions);
@@ -26,34 +21,29 @@ export default Route.extend({
       return e.httpStatus;
     }
   },
-
   pathQuery(backend, endpoint) {
     return {
       id: `${backend}/${endpoint}/`,
     };
   },
-
   async fetchCapabilitiesRole(queryOptions) {
     return this.store.queryRecord('capabilities', this.pathQuery(queryOptions.backend, 'roles'));
   },
-
   async fetchCapabilitiesStaticRole(queryOptions) {
     return this.store.queryRecord('capabilities', this.pathQuery(queryOptions.backend, 'static-roles'));
   },
-
   async fetchCapabilitiesConnection(queryOptions) {
     return this.store.queryRecord('capabilities', this.pathQuery(queryOptions.backend, 'config'));
   },
-
   model() {
-    const backend = this.enginePathParam();
-    const queryOptions = { backend, id: '' };
+    let backend = this.enginePathParam();
+    let queryOptions = { backend, id: '' };
 
-    const connection = this.fetchConnection(queryOptions);
-    const role = this.fetchAllRoles(queryOptions);
-    const roleCapabilities = this.fetchCapabilitiesRole(queryOptions);
-    const staticRoleCapabilities = this.fetchCapabilitiesStaticRole(queryOptions);
-    const connectionCapabilities = this.fetchCapabilitiesConnection(queryOptions);
+    let connection = this.fetchConnection(queryOptions);
+    let role = this.fetchAllRoles(queryOptions);
+    let roleCapabilities = this.fetchCapabilitiesRole(queryOptions);
+    let staticRoleCapabilities = this.fetchCapabilitiesStaticRole(queryOptions);
+    let connectionCapabilities = this.fetchCapabilitiesConnection(queryOptions);
 
     return hash({
       backend,
@@ -67,16 +57,15 @@ export default Route.extend({
       icon: 'database',
     });
   },
-
   setupController(controller, model) {
     this._super(...arguments);
-    const showEmptyState = model.connections === 404 && model.roles === 404;
-    const noConnectionCapabilities =
+    let showEmptyState = model.connections === 404 && model.roles === 404;
+    let noConnectionCapabilities =
       !model.connectionCapabilities.canList &&
       !model.connectionCapabilities.canCreate &&
       !model.connectionCapabilities.canUpdate;
 
-    const emptyStateMessage = function () {
+    let emptyStateMessage = function () {
       if (noConnectionCapabilities) {
         return 'You cannot yet generate credentials.  Ask your administrator if you think you should have access.';
       } else {

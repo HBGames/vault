@@ -1,7 +1,8 @@
-import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
+import Model, { attr, hasMany } from '@ember-data/model';
 import { inject as service } from '@ember/service';
 import { alias, and, equal, gte, not, or } from '@ember/object/computed';
 import { get, computed } from '@ember/object';
+import { fragment } from 'ember-data-model-fragments/attributes';
 
 export default Model.extend({
   version: service(),
@@ -52,10 +53,10 @@ export default Model.extend({
   allReplicationDisabled: and('{dr,performance}.replicationDisabled'),
   anyReplicationEnabled: or('{dr,performance}.replicationEnabled'),
 
-  dr: belongsTo('replication-attributes', { async: false, inverse: null }),
-  performance: belongsTo('replication-attributes', { async: false, inverse: null }),
+  dr: fragment('replication-attributes'),
+  performance: fragment('replication-attributes'),
   // this service exposes what mode the UI is currently viewing
-  // replicationAttrs will then return the relevant `replication-attributes` model
+  // replicationAttrs will then return the relevant `replication-attributes` fragment
   rm: service('replication-mode'),
   drMode: alias('dr.mode'),
   replicationMode: alias('rm.mode'),

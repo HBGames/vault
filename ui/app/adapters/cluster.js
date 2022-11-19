@@ -38,7 +38,7 @@ export default ApplicationAdapter.extend({
   },
 
   findRecord(store, type, id, snapshot) {
-    const fetches = {
+    let fetches = {
       health: this.health(),
       sealStatus: this.sealStatus().catch((e) => e),
     };
@@ -110,7 +110,7 @@ export default ApplicationAdapter.extend({
     const { role, jwt, token, password, username, path, nonce } = data;
     const url = this.urlForAuth(backend, username, path);
     const verb = backend === 'token' ? 'GET' : 'POST';
-    const options = {
+    let options = {
       unauthenticated: true,
     };
     if (backend === 'token') {

@@ -44,6 +44,6 @@ variable "instance_type" {
 variable "revision" {
   default = null
 }
-variable "product_version" {
+variable "vault_product_version" {
   default = null
 }

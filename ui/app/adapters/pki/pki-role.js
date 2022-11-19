@@ -9,7 +9,7 @@ export default ApplicationAdapter.extend({
     const serializer = store.serializerFor(type.modelName);
     const data = serializer.serialize(snapshot, requestType);
     const { id } = snapshot;
-    const url = this.urlForRole(snapshot.record.get('backend'), id);
+    let url = this.urlForRole(snapshot.record.get('backend'), id);
 
     return this.ajax(url, 'POST', { data });
   },
@@ -40,7 +40,7 @@ export default ApplicationAdapter.extend({
   },
 
   optionsForQuery(id) {
-    const data = {};
+    let data = {};
     if (!id) {
       data['list'] = true;
     }

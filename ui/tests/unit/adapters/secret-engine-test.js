@@ -51,15 +51,11 @@ module('Unit | Adapter | secret engine', function (hooks) {
   cases.forEach((testCase) => {
     test(`secret-engine: ${testCase.description}`, function (assert) {
       assert.expect(2);
-      const adapter = this.owner.lookup('adapter:secret-engine');
+      let adapter = this.owner.lookup('adapter:secret-engine');
       adapter[testCase.adapterMethod](...testCase.args);
-      const { url, method } = this.server.handledRequests[0];
-      assert.strictEqual(
-        url,
-        testCase.url,
-        `${testCase.adapterMethod} calls the correct url: ${testCase.url}`
-      );
-      assert.strictEqual(
+      let { url, method } = this.server.handledRequests[0];
+      assert.equal(url, testCase.url, `${testCase.adapterMethod} calls the correct url: ${testCase.url}`);
+      assert.equal(
         method,
         testCase.method,
         `${testCase.adapterMethod} uses the correct http verb: ${testCase.method}`

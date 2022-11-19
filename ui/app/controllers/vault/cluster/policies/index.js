@@ -49,9 +49,9 @@ export default Controller.extend({
       this.set('filterFocused', bool);
     },
     deletePolicy(model) {
-      const policyType = model.get('policyType');
-      const name = model.id;
-      const flash = this.flashMessages;
+      let policyType = model.get('policyType');
+      let name = model.id;
+      let flash = this.flashMessages;
       model
         .destroyRecord()
         .then(() => {
@@ -63,7 +63,7 @@ export default Controller.extend({
           }
         })
         .catch((e) => {
-          const errors = e.errors ? e.errors.join('') : e.message;
+          let errors = e.errors ? e.errors.join('') : e.message;
           flash.danger(
             `There was an error deleting the ${policyType.toUpperCase()} policy "${name}": ${errors}.`
           );

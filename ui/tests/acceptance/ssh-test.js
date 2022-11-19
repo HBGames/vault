@@ -31,16 +31,12 @@ module('Acceptance | ssh secret backend', function (hooks) {
       },
       assertBeforeGenerate(assert) {
         assert.dom('[data-test-form-field-from-model]').exists('renders the FormFieldFromModel');
-        const value = document.querySelector('[data-test-ttl-value="TTL"]').value;
+        let value = document.querySelector('[data-test-ttl-value="TTL"]').value;
         // confirms that the actions are correctly being passed down to the FormFieldFromModel component
-        assert.strictEqual(value, '30', 'renders action updateTtl');
+        assert.equal(value, '30', 'renders action updateTtl');
       },
       assertAfterGenerate(assert, sshPath) {
-        assert.strictEqual(
-          currentURL(),
-          `/vault/secrets/${sshPath}/sign/${this.name}`,
-          'ca sign url is correct'
-        );
+        assert.equal(currentURL(), `/vault/secrets/${sshPath}/sign/${this.name}`, 'ca sign url is correct');
         assert.dom('[data-test-row-label="Signed key"]').exists({ count: 1 }, 'renders the signed key');
         assert
           .dom('[data-test-row-value="Signed key"]')
@@ -62,7 +58,7 @@ module('Acceptance | ssh secret backend', function (hooks) {
         await fillIn('[data-test-input="ip"]', '1.2.3.4');
       },
       assertAfterGenerate(assert, sshPath) {
-        assert.strictEqual(
+        assert.equal(
           currentURL(),
           `/vault/secrets/${sshPath}/credentials/${this.name}`,
           'otp credential url is correct'
@@ -85,7 +81,7 @@ module('Acceptance | ssh secret backend', function (hooks) {
 
     await click('[data-test-secret-backend-configure]');
 
-    assert.strictEqual(currentURL(), `/vault/settings/secrets/configure/${sshPath}`);
+    assert.equal(currentURL(), `/vault/settings/secrets/configure/${sshPath}`);
     assert.ok(findAll('[data-test-ssh-configure-form]').length, 'renders the empty configuration form');
 
     // default has generate CA checked so we just submit the form
@@ -97,9 +93,9 @@ module('Acceptance | ssh secret backend', function (hooks) {
     );
     await click('[data-test-backend-view-link]');
 
-    assert.strictEqual(currentURL(), `/vault/secrets/${sshPath}/list`, `redirects to ssh index`);
+    assert.equal(currentURL(), `/vault/secrets/${sshPath}/list`, `redirects to ssh index`);
 
-    for (const role of ROLES) {
+    for (let role of ROLES) {
       // create a role
       await click('[ data-test-secret-create]');
 
@@ -116,7 +112,7 @@ module('Acceptance | ssh secret backend', function (hooks) {
       // save the role
       await click('[data-test-role-ssh-create]');
       await waitUntil(() => currentURL() === `/vault/secrets/${sshPath}/show/${role.name}`); // flaky without this
-      assert.strictEqual(
+      assert.equal(
         currentURL(),
         `/vault/secrets/${sshPath}/show/${role.name}`,
         `${role.type}: navigates to the show page on creation`
@@ -146,7 +142,7 @@ module('Acceptance | ssh secret backend', function (hooks) {
 
       await click('[data-test-secret-generate-cancel]');
 
-      assert.strictEqual(
+      assert.equal(
         currentURL(),
         `/vault/secrets/${sshPath}/list`,
         `${role.type}: cancel takes you to ssh index`

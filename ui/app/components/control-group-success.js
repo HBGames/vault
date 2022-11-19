@@ -16,10 +16,10 @@ export default Component.extend({
   unwrapData: null,
 
   unwrap: task(function* (token) {
-    const adapter = this.store.adapterFor('tools');
+    let adapter = this.store.adapterFor('tools');
     this.set('error', null);
     try {
-      const response = yield adapter.toolAction('unwrap', null, { clientToken: token });
+      let response = yield adapter.toolAction('unwrap', null, { clientToken: token });
       this.set('unwrapData', response.auth || response.data);
       this.controlGroup.deleteControlGroupToken(this.model.id);
     } catch (e) {
@@ -29,7 +29,7 @@ export default Component.extend({
 
   markAndNavigate: task(function* () {
     this.controlGroup.markTokenForUnwrap(this.model.id);
-    const { url } = this.controlGroupResponse.uiParams;
+    let { url } = this.controlGroupResponse.uiParams;
     yield this.router.transitionTo(url);
   }).drop(),
 });

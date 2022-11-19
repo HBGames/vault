@@ -25,7 +25,7 @@ export default Controller.extend({
 
     updateTtl(path, val) {
       const model = this.model;
-      const valueToSet = val.enabled === true ? `${val.seconds}s` : undefined;
+      let valueToSet = val.enabled === true ? `${val.seconds}s` : undefined;
       set(model, path, valueToSet);
     },
 

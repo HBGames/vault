@@ -6,7 +6,7 @@ export default ApplicationAdapter.extend({
   },
 
   fetchStatus(mode) {
-    const url = this.getStatusUrl(mode);
+    let url = this.getStatusUrl(mode);
     return this.ajax(url, 'GET', { unauthenticated: true }).then((resp) => {
       return resp.data;
     });

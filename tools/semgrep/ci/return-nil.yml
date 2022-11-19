@@ -1,5 +1,5 @@
 rules:
-  - id: hc-return-nil
+  - id: return-nil
     patterns:
       - pattern-either:
           - pattern: |

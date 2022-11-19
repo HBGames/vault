@@ -101,7 +101,7 @@ export default Certificate.extend({
   fieldDefinition: computed('caType', 'uploadPemBundle', function () {
     const type = this.caType;
     const isUpload = this.uploadPemBundle;
-    const groups = [{ default: ['caType', 'uploadPemBundle'] }];
+    let groups = [{ default: ['caType', 'uploadPemBundle'] }];
     if (isUpload) {
       groups[0].default.push('pemBundle');
     } else {

@@ -20,7 +20,7 @@ export default RESTSerializer.extend({
       return connections;
     }
     // Query single record response:
-    const response = {
+    let response = {
       id: payload.id,
       name: payload.id,
       backend: payload.backend,
@@ -48,18 +48,18 @@ export default RESTSerializer.extend({
   },
 
   serialize(snapshot, requestType) {
-    const data = this._super(snapshot, requestType);
+    let data = this._super(snapshot, requestType);
     if (!data.plugin_name) {
       return data;
     }
-    const pluginType = AVAILABLE_PLUGIN_TYPES.find((plugin) => plugin.value === data.plugin_name);
+    let pluginType = AVAILABLE_PLUGIN_TYPES.find((plugin) => plugin.value === data.plugin_name);
     if (!pluginType) {
       return data;
     }
-    const pluginAttributes = pluginType.fields.map((fields) => fields.attr).concat('backend');
+    let pluginAttributes = pluginType.fields.map((fields) => fields.attr).concat('backend');
 
     // filter data to only allow plugin specific attrs
-    const allowedAttributes = Object.keys(data).filter((dataAttrs) => pluginAttributes.includes(dataAttrs));
+    let allowedAttributes = Object.keys(data).filter((dataAttrs) => pluginAttributes.includes(dataAttrs));
     for (const key in data) {
       if (!allowedAttributes.includes(key)) {
         delete data[key];

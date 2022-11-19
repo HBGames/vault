@@ -1,6 +1,7 @@
-import Model, { attr, belongsTo } from '@ember-data/model';
+import Model, { attr } from '@ember-data/model';
 import { computed } from '@ember/object'; // eslint-disable-line
 import { equal } from '@ember/object/computed'; // eslint-disable-line
+import { fragment } from 'ember-data-model-fragments/attributes';
 import fieldToAttrs, { expandAttributeMeta } from 'vault/utils/field-to-attrs';
 import { withModelValidations } from 'vault/decorators/model-validations';
 
@@ -28,16 +29,8 @@ export default SecretEngineModel.extend({
   description: attr('string', {
     editType: 'textarea',
   }),
-  // will only have value for kv type
-  version: attr('number', {
-    label: 'Version',
-    helpText:
-      'The KV Secrets Engine can operate in different modes. Version 1 is the original generic Secrets Engine the allows for storing of static key/value pairs. Version 2 added more features including data versioning, TTLs, and check and set.',
-    possibleValues: [2, 1],
-    // This shouldn't be defaultValue because if no version comes back from API we should assume it's v1
-    defaultFormValue: 2, // Set the form to 2 by default
-  }),
-  config: belongsTo('mount-config', { async: false, inverse: null }),
+  config: fragment('mount-config', { defaultValue: {} }),
+  options: fragment('mount-options', { defaultValue: {} }),
   local: attr('boolean', {
     helpText:
       'When Replication is enabled, a local mount will not be replicated across clusters. This can only be specified at mount time.',
@@ -67,10 +60,11 @@ export default SecretEngineModel.extend({
     helperTextEnabled: 'Delete all new versions of this secret after',
   }),
 
-  modelTypeForKV: computed('engineType', 'version', function () {
-    const type = this.engineType;
+  modelTypeForKV: computed('engineType', 'options.version', function () {
+    let type = this.engineType;
+    let version = this.options?.version;
     let modelType = 'secret';
-    if ((type === 'kv' || type === 'generic') && this.version === 2) {
+    if ((type === 'kv' || type === 'generic') && version === 2) {
       modelType = 'secret-v2';
     }
     return modelType;
@@ -78,24 +72,25 @@ export default SecretEngineModel.extend({
 
   isV2KV: equal('modelTypeForKV', 'secret-v2'),
 
-  formFields: computed('engineType', 'version', function () {
-    const type = this.engineType;
-    const fields = ['type', 'path', 'description', 'accessor', 'local', 'sealWrap'];
+  formFields: computed('engineType', 'options.version', function () {
+    let type = this.engineType;
+    let version = this.options?.version;
+    let fields = ['type', 'path', 'description', 'accessor', 'local', 'sealWrap'];
     // no ttl options for keymgmt
     const ttl = type !== 'keymgmt' ? 'defaultLeaseTtl,maxLeaseTtl,' : '';
     fields.push(`config.{${ttl}auditNonHmacRequestKeys,auditNonHmacResponseKeys,passthroughRequestHeaders}`);
     if (type === 'kv' || type === 'generic') {
-      fields.push('version');
+      fields.push('options.{version}');
     }
     // version comes in as number not string
-    if (type === 'kv' && this.version === 2) {
+    if (type === 'kv' && version === 2) {
       fields.push('casRequired', 'deleteVersionAfter', 'maxVersions');
     }
     return fields;
   }),
 
   formFieldGroups: computed('engineType', function () {
-    const type = this.engineType;
+    let type = this.engineType;
     let defaultGroup;
     // KV has specific config options it adds on the enable engine. https://www.vaultproject.io/api/secret/kv/kv-v2#configure-the-kv-engine
     if (type === 'kv') {
@@ -103,7 +98,7 @@ export default SecretEngineModel.extend({
     } else {
       defaultGroup = { default: ['path'] };
     }
-    const optionsGroup = {
+    let optionsGroup = {
       'Method Options': ['description', 'config.listingVisibility', 'local', 'sealWrap'],
     };
     // no ttl options for keymgmt
@@ -113,7 +108,7 @@ export default SecretEngineModel.extend({
     );
 
     if (type === 'kv' || type === 'generic') {
-      optionsGroup['Method Options'].unshift('version');
+      optionsGroup['Method Options'].unshift('options.{version}');
     }
     if (type === 'database') {
       // For the Database Secret Engine we want to highlight the defaultLeaseTtl and maxLeaseTtl, removing them from the options object

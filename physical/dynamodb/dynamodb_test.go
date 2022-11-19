@@ -381,7 +381,7 @@ func prepareDynamoDBTestContainer(t *testing.T) (func(), *Config) {
 	}
 
 	runner, err := docker.NewServiceRunner(docker.RunOptions{
-		ImageRepo:     "docker.mirror.hashicorp.services/cnadiminti/dynamodb-local",
+		ImageRepo:     "cnadiminti/dynamodb-local",
 		ImageTag:      "latest",
 		ContainerName: "dynamodb",
 		Ports:         []string{"8000/tcp"},

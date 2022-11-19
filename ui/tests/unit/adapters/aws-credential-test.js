@@ -22,7 +22,7 @@ module('Unit | Adapter | aws credential', function (hooks) {
     },
   };
 
-  const makeSnapshot = (obj) => {
+  let makeSnapshot = (obj) => {
     obj.role = {
       backend: 'aws',
       name: 'foo',
@@ -69,16 +69,12 @@ module('Unit | Adapter | aws credential', function (hooks) {
   cases.forEach(([description, args, expectedMethod, expectedRequestBody]) => {
     test(`aws-credential: ${description}`, function (assert) {
       assert.expect(3);
-      const adapter = this.owner.lookup('adapter:aws-credential');
+      let adapter = this.owner.lookup('adapter:aws-credential');
       adapter.createRecord(...args);
-      const { method, url, requestBody } = this.server.handledRequests[0];
-      assert.strictEqual(url, '/v1/aws/creds/foo', `calls the correct url`);
-      assert.strictEqual(
-        method,
-        expectedMethod,
-        `${description} uses the correct http verb: ${expectedMethod}`
-      );
-      assert.strictEqual(requestBody, expectedRequestBody ? JSON.stringify(expectedRequestBody) : null);
+      let { method, url, requestBody } = this.server.handledRequests[0];
+      assert.equal(url, '/v1/aws/creds/foo', `calls the correct url`);
+      assert.equal(method, expectedMethod, `${description} uses the correct http verb: ${expectedMethod}`);
+      assert.equal(requestBody, JSON.stringify(expectedRequestBody));
     });
   });
 });

@@ -1421,7 +1421,7 @@ module('Integration | Component | clients/monthly-usage', function (hooks) {
   test('it renders empty state with no data', async function (assert) {
     await render(hbs`
       <div id="modal-wormhole"></div>
-      <Clients::MonthlyUsage @chartLegend={{this.chartLegend}} @timestamp={{this.timestamp}}/>
+      <Clients::MonthlyUsage @chartLegend={{chartLegend}} @timestamp={{timestamp}}/>
     `);
     assert.dom('[data-test-monthly-usage]').exists('monthly usage component renders');
     assert.dom('[data-test-component="empty-state"]').exists();
@@ -1444,9 +1444,9 @@ module('Integration | Component | clients/monthly-usage', function (hooks) {
     await render(hbs`
     <div id="modal-wormhole"></div>
     <Clients::MonthlyUsage 
-    @chartLegend={{this.chartLegend}}
-    @verticalBarChartData={{this.byMonthActivityData}} 
-    @timestamp={{this.timestamp}}
+    @chartLegend={{chartLegend}}
+    @verticalBarChartData={{byMonthActivityData}} 
+    @timestamp={{timestamp}}
     />
     `);
     assert.dom('[data-test-monthly-usage]').exists('monthly usage component renders');

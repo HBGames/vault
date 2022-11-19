@@ -1,4 +1,5 @@
-{{#if (not (has-feature "DR Replication"))}}
+{{! template-lint-configure simple-unless "warn" }}
+{{#unless (has-feature "DR Replication")}}
   <UpgradePage @title="Replication" />
 {{else if (or this.cluster.allReplicationDisabled this.cluster.replicationAttrs.replicationDisabled)}}
   <PageHeader as |p|>
@@ -48,15 +49,15 @@
             <Icon @size="24" @name="replication-perf" />
             Performance Replication
           </h3>
-          {{#if (has-feature "Performance Replication")}}
-            <p class="help has-text-grey-dark">
-              {{replication-mode-description "performance"}}
-            </p>
-          {{else}}
+          {{#unless (has-feature "Performance Replication")}}
             <p class="help has-text-grey-dark">
               Performance Replication is a feature of Vault Enterprise Premium
             </p>
-          {{/if}}
+          {{else}}
+            <p class="help has-text-grey-dark">
+              {{replication-mode-description "performance"}}
+            </p>
+          {{/unless}}
         {{/if}}
       {{else}}
         <p class="has-text-grey-dark box is-shadowless is-fullwidth has-slim-padding">
@@ -211,9 +212,9 @@
             <div class="field">
               <label for="primary_api_addr" class="is-label">
                 Primary API address
-                {{#if (not (and this.token (not this.tokenIncludesAPIAddr)))}}
+                {{#unless (and this.token (not this.tokenIncludesAPIAddr))}}
                   <em class="is-optional">(optional)</em>
-                {{/if}}
+                {{/unless}}
               </label>
               <div class="control">
                 <Input @value={{this.primary_api_addr}} id="primary_api_addr" name="primary_api_addr" class="input" />
@@ -287,7 +288,7 @@
     {{/if}}
   </form>
 {{else if this.showModeSummary}}
-  {{#if (not (and this.cluster.dr.replicationEnabled this.cluster.performance.replicationEnabled))}}
+  {{#unless (and this.cluster.dr.replicationEnabled this.cluster.performance.replicationEnabled)}}
     <PageHeader as |p|>
       <p.levelLeft>
         <h1 class="title is-3">
@@ -295,7 +296,7 @@
         </h1>
       </p.levelLeft>
     </PageHeader>
-  {{/if}}
+  {{/unless}}
 
   {{#if (and (eq this.cluster.dr.mode "primary") (eq this.cluster.performance.mode "primary"))}}
     <ReplicationPage @model={{this.cluster}} as |Page|>
@@ -323,7 +324,7 @@
         <ReplicationModeSummary @mode="dr" @cluster={{this.cluster}} @tagName="div" />
       {{/if}}
     </div>
-    {{#if (not (and this.submit.isRunning (eq this.cluster.dr.mode "bootstrapping")))}}
+    {{#unless (and this.submit.isRunning (eq this.cluster.dr.mode "bootstrapping"))}}
       <div class="box is-bottomless is-fullwidth is-marginless">
         <h3 class="title is-flex-center is-5 is-marginless">
           <Icon @size="24" @name="replication-perf" />
@@ -333,7 +334,7 @@
           <ReplicationModeSummary @mode="performance" @cluster={{this.cluster}} @tagName="span" />
         </LinkTo>
       </div>
-    {{/if}}
+    {{/unless}}
   {{/if}}
 {{else}}
   {{#if (eq this.replicationAttrs.mode "initializing")}}
@@ -372,4 +373,4 @@
       </ReplicationPage>
     </div>
   {{/if}}
-{{/if}}
+{{/unless}}

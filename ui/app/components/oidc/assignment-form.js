@@ -15,10 +15,11 @@ import { tracked } from '@glimmer/tracking';
  * @onSave={transition-to "vault.cluster.access.oidc.assignments.assignment.details" this.model.name}
  * />
  * ```
-
+ * @callback onCancel
+ * @callback onSave
  * @param {object} model - The parent's model
- * @callback onCancel - callback triggered when cancel button is clicked
- * @callback onSave - callback triggered when save button is clicked*
+ * @param {string} onCancel - callback triggered when cancel button is clicked
+ * @param {string} onSave - callback triggered when save button is clicked
  */
 
 export default class OidcAssignmentFormComponent extends Component {

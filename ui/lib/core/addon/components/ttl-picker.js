@@ -94,7 +94,7 @@ export default Component.extend({
   },
 
   parseAndSetTime() {
-    const value = this.initialValue;
+    let value = this.initialValue;
     let seconds = typeOf(value) === 'number' ? value : 30;
     try {
       seconds = Duration.parse(value).seconds();

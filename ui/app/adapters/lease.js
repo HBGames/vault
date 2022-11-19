@@ -15,7 +15,7 @@ export default ApplicationAdapter.extend({
   },
 
   renew(lease_id, increment) {
-    const url = this.buildURL() + '/leases/renew';
+    let url = this.buildURL() + '/leases/renew';
     return this.ajax(url, 'PUT', {
       data: {
         lease_id,

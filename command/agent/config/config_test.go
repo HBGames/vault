@@ -230,7 +230,6 @@ func TestLoadConfigFile(t *testing.T) {
 				NumRetries: 12,
 			},
 		},
-		LogFile: "/var/log/vault/vault-agent.log",
 	}
 
 	config.Prune()
@@ -433,7 +432,7 @@ func TestLoadConfigFile_Bad_AgentCache_NoListeners(t *testing.T) {
 }
 
 func TestLoadConfigFile_Bad_AutoAuth_Wrapped_Multiple_Sinks(t *testing.T) {
-	_, err := LoadConfig("./test-fixtures/bad-config-auto_auth-wrapped-multiple-sinks.hcl")
+	_, err := LoadConfig("./test-fixtures/bad-config-auto_auth-wrapped-multiple-sinks")
 	if err == nil {
 		t.Fatal("LoadConfig should return an error when auth_auth.method.wrap_ttl nonzero and multiple sinks defined")
 	}

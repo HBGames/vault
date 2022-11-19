@@ -17,7 +17,7 @@ export default ApplicationSerializer.extend({
   },
 
   serialize() {
-    const json = this._super(...arguments);
+    let json = this._super(...arguments);
     if (json.enabled === 'On' || json.enabled === 'Off') {
       const oldEnabled = json.enabled;
       json.enabled = oldEnabled === 'On' ? 'enable' : 'disable';

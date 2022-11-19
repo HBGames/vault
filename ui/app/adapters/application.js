@@ -32,16 +32,15 @@ export default RESTAdapter.extend({
   },
 
   addHeaders(url, options) {
-    const token = options.clientToken || this.auth.currentToken;
-    const headers = {};
+    let token = options.clientToken || this.auth.currentToken;
+    let headers = {};
     if (token && !options.unauthenticated) {
       headers['X-Vault-Token'] = token;
     }
     if (options.wrapTTL) {
       headers['X-Vault-Wrap-TTL'] = options.wrapTTL;
     }
-    const namespace =
-      typeof options.namespace === 'undefined' ? this.namespaceService.path : options.namespace;
+    let namespace = typeof options.namespace === 'undefined' ? this.namespaceService.path : options.namespace;
     if (namespace && !NAMESPACE_ROOT_URLS.some((str) => url.includes(str))) {
       headers['X-Vault-Namespace'] = namespace;
     }
@@ -62,8 +61,8 @@ export default RESTAdapter.extend({
     let url = intendedUrl;
     let type = method;
     let options = passedOptions;
-    const controlGroup = this.controlGroup;
-    const controlGroupToken = controlGroup.tokenForUrl(url);
+    let controlGroup = this.controlGroup;
+    let controlGroupToken = controlGroup.tokenForUrl(url);
     // if we have a Control Group token that matches the intendedUrl,
     // then we want to unwrap it and return the unwrapped response as
     // if it were the initial request
@@ -78,7 +77,7 @@ export default RESTAdapter.extend({
         },
       };
     }
-    const opts = this._preRequest(url, options);
+    let opts = this._preRequest(url, options);
 
     return this._super(url, type, opts).then((...args) => {
       if (controlGroupToken) {
@@ -86,7 +85,7 @@ export default RESTAdapter.extend({
       }
       const [resp] = args;
       if (resp && resp.warnings) {
-        const flash = this.flashMessages;
+        let flash = this.flashMessages;
         resp.warnings.forEach((message) => {
           flash.info(message);
         });
@@ -97,7 +96,7 @@ export default RESTAdapter.extend({
 
   // for use on endpoints that don't return JSON responses
   rawRequest(url, type, options = {}) {
-    const opts = this._preRequest(url, options);
+    let opts = this._preRequest(url, options);
     return fetch(url, {
       method: type || 'GET',
       headers: opts.headers || {},

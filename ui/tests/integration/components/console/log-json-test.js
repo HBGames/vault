@@ -18,8 +18,8 @@ module('Integration | Component | console/log json', function (hooks) {
 
     this.set('content', objectContent);
 
-    await render(hbs`{{console/log-json content=this.content}}`);
+    await render(hbs`{{console/log-json content=content}}`);
     const instance = find('[data-test-component=code-mirror-modifier]').innerText;
-    assert.strictEqual(instance, expectedText);
+    assert.equal(instance, expectedText);
   });
 });

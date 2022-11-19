@@ -93,7 +93,7 @@ export default Component.extend(TRANSIT_PARAMS, {
   },
 
   keyIsRSA: computed('key.type', function () {
-    const type = this.key.type;
+    let type = this.key.type;
     return type === 'rsa-2048' || type === 'rsa-3072' || type === 'rsa-4096';
   }),
 
@@ -120,9 +120,9 @@ export default Component.extend(TRANSIT_PARAMS, {
   },
 
   resetParams(oldAction, action) {
-    const params = copy(TRANSIT_PARAMS);
+    let params = copy(TRANSIT_PARAMS);
     let paramsToKeep;
-    const clearWithoutCheck =
+    let clearWithoutCheck =
       !oldAction ||
       // don't save values from datakey
       oldAction === 'datakey' ||
@@ -181,8 +181,8 @@ export default Component.extend(TRANSIT_PARAMS, {
   },
 
   compactData(data) {
-    const type = this.key.type;
-    const isRSA = type === 'rsa-2048' || type === 'rsa-3072' || type === 'rsa-4096';
+    let type = this.key.type;
+    let isRSA = type === 'rsa-2048' || type === 'rsa-3072' || type === 'rsa-4096';
     return Object.keys(data).reduce((result, key) => {
       if (key === 'signature_algorithm' && !isRSA) {
         return result;
@@ -216,11 +216,7 @@ export default Component.extend(TRANSIT_PARAMS, {
       this.toggleProperty('isModalActive');
     },
 
-    doSubmit(data, options = {}, maybeEvent) {
-      const event = options.type === 'submit' ? options : maybeEvent;
-      if (event) {
-        event.preventDefault();
-      }
+    doSubmit(data, options = {}) {
       const { backend, id } = this.getModelInfo();
       const action = this.selectedAction;
       const { encodedBase64, ...formData } = data || {};
@@ -232,7 +228,7 @@ export default Component.extend(TRANSIT_PARAMS, {
           formData.input = encodeString(formData.input);
         }
       }
-      const payload = formData ? this.compactData(formData) : null;
+      let payload = formData ? this.compactData(formData) : null;
       this.setProperties({
         errors: null,
         result: null,

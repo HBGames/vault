@@ -80,7 +80,7 @@ module('Integration | Component | oidc/client-form', function (hooks) {
       .dom('[data-test-oidc-client-title]')
       .hasText('Create application', 'Form title renders correct text');
     assert.dom(SELECTORS.clientSaveButton).hasText('Create', 'Save button has correct text');
-    assert.strictEqual(findAll('[data-test-field]').length, 6, 'renders all attribute fields');
+    assert.equal(findAll('[data-test-field]').length, 6, 'renders all attribute fields');
     assert.dom('input#allow-all').isChecked('Allow all radio button selected by default');
     assert.dom('[data-test-ttl-value="ID Token TTL"]').hasValue('1', 'ttl defaults to 24h');
     assert.dom('[data-test-ttl-value="Access Token TTL"]').hasValue('1', 'ttl defaults to 24h');
@@ -91,7 +91,7 @@ module('Integration | Component | oidc/client-form', function (hooks) {
     await click('[data-test-selected-list-button="delete"]');
     await click(SELECTORS.clientSaveButton);
 
-    const validationErrors = findAll(SELECTORS.inlineAlert);
+    let validationErrors = findAll(SELECTORS.inlineAlert);
     assert
       .dom(validationErrors[0])
       .hasText('Name is required. Name cannot contain whitespace.', 'Validation messages are shown for name');
@@ -188,11 +188,11 @@ module('Integration | Component | oidc/client-form', function (hooks) {
     await fillIn('[data-test-input="redirectUris"] [data-test-string-list-input="0"]', 'some-url.com');
     await click('[data-test-string-list-button="add"]');
     await click(SELECTORS.clientCancelButton);
-    assert.strictEqual(this.model.redirectUris, undefined, 'Model attributes rolled back on cancel');
+    assert.equal(this.model.redirectUris, undefined, 'Model attributes rolled back on cancel');
   });
 
   test('it should show create assignment modal', async function (assert) {
-    assert.expect(3);
+    assert.expect(2);
     this.model = this.store.createRecord('oidc/client');
 
     await render(hbs`
@@ -207,10 +207,9 @@ module('Integration | Component | oidc/client-form', function (hooks) {
     await clickTrigger();
     await fillIn('.ember-power-select-search input', 'test-new');
     await searchSelect.options.objectAt(0).click();
-    assert.dom('[data-test-modal-div]').hasClass('is-active', 'modal with form opens');
     assert.dom('[data-test-modal-title]').hasText('Create new assignment', 'Create assignment modal renders');
     await click(SELECTORS.assignmentCancelButton);
-    assert.dom('[data-test-modal-div]').doesNotExist('modal disappears onCancel');
+    assert.dom('[data-test-modal-div]').doesNotExist('Modal disappears after clicking cancel');
   });
 
   test('it should render fallback for search select', async function (assert) {

@@ -2,8 +2,8 @@
 //
 
 import AuthMethodModel from './auth-method';
-import { belongsTo } from '@ember-data/model';
+import { fragment } from 'ember-data-model-fragments/attributes';
 
 export default AuthMethodModel.extend({
-  otherConfig: belongsTo('mount-config', { async: false, inverse: null }),
+  otherConfig: fragment('mount-config', { defaultValue: {} }),
 });

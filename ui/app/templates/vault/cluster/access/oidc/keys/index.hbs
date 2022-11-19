@@ -1,6 +1,6 @@
 <Toolbar>
   <ToolbarActions>
-    <ToolbarLink @route="vault.cluster.access.oidc.keys.create" @type="add" data-test-oidc-key-create>
+    <ToolbarLink data-test-oidc-key-create @type="add" @params={{array "vault.cluster.access.oidc.keys.create"}}>
       Create key
     </ToolbarLink>
   </ToolbarActions>

@@ -49,7 +49,7 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
     await clearRecord(this.store, 'oidc/assignment', 'test-assignment');
 
     await visit(OIDC_BASE_URL + '/assignments');
-    assert.strictEqual(currentURL(), '/vault/access/oidc/assignments');
+    assert.equal(currentURL(), '/vault/access/oidc/assignments');
     assert.dom('[data-test-tab="assignments"]').hasClass('active', 'assignments tab is active');
     assert
       .dom('[data-test-oidc-assignment-linked-block="allow_all"]')
@@ -61,7 +61,7 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
     this.server.get('/identity/oidc/client', () => overrideMirageResponse(404));
 
     await visit(OIDC_BASE_URL);
-    assert.strictEqual(currentURL(), '/vault/access/oidc');
+    assert.equal(currentURL(), '/vault/access/oidc');
     assert.dom('h1.title.is-3').hasText('OIDC Provider');
     assert.dom(SELECTORS.oidcHeader).hasText(
       `Configure Vault to act as an OIDC identity provider, and offer Vault’s various authentication
@@ -84,23 +84,19 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
 
     // create a client with allow all access
     await visit(OIDC_BASE_URL + '/clients/create');
-    assert.strictEqual(
-      currentRouteName(),
-      'vault.cluster.access.oidc.clients.create',
-      'navigates to create form'
-    );
+    assert.equal(currentRouteName(), 'vault.cluster.access.oidc.clients.create', 'navigates to create form');
     await fillIn('[data-test-input="name"]', 'test-app');
     await click('[data-test-toggle-group="More options"]');
     // toggle ttls to false, testing it sets correct default duration
     await click('[data-test-input="idTokenTtl"]');
     await click('[data-test-input="accessTokenTtl"]');
     await click(SELECTORS.clientSaveButton);
-    assert.strictEqual(
+    assert.equal(
       flashMessage.latestMessage,
       'Successfully created the application test-app.',
       'renders success flash upon client creation'
     );
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.clients.client.details',
       'navigates to client details view after save'
@@ -127,7 +123,7 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
     // edit client
     await click(SELECTORS.clientDetailsTab);
     await click(SELECTORS.clientEditButton);
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.clients.client.edit',
       'navigates to edit page from details'
@@ -144,18 +140,18 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
     await click('[data-test-search-select="groups"] .ember-basic-dropdown-trigger');
     await searchSelect.options.objectAt(0).click();
     await click(SELECTORS.assignmentSaveButton);
-    assert.strictEqual(
+    assert.equal(
       flashMessage.latestMessage,
       'Successfully created the assignment assignment-inline.',
       'renders success flash upon assignment creating'
     );
     await click(SELECTORS.clientSaveButton);
-    assert.strictEqual(
+    assert.equal(
       flashMessage.latestMessage,
       'Successfully updated the application test-app.',
       'renders success flash upon client updating'
     );
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.clients.client.details',
       'navigates back to details on update'
@@ -182,22 +178,22 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
     // immediately delete client, test transition
     await click(SELECTORS.clientDeleteButton);
     await click(SELECTORS.confirmActionButton);
-    assert.strictEqual(
+    assert.equal(
       flashMessage.latestMessage,
       'Application deleted successfully',
       'renders success flash upon deleting client'
     );
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.clients.index',
       'navigates back to list view after delete'
     );
     // delete last client
     await click('[data-test-oidc-client-linked-block]');
-    assert.strictEqual(currentRouteName(), 'vault.cluster.access.oidc.clients.client.details');
+    assert.equal(currentRouteName(), 'vault.cluster.access.oidc.clients.client.details');
     await click(SELECTORS.clientDeleteButton);
     await click(SELECTORS.confirmActionButton);
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.index',
       'redirects to call to action if only existing client is deleted'
@@ -207,7 +203,7 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
   });
 
   test('it creates, updates, and deletes an assignment', async function (assert) {
-    assert.expect(14);
+    assert.expect(12);
     await visit(OIDC_BASE_URL + '/assignments');
 
     //* ensure clean test state
@@ -215,22 +211,21 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
 
     // create a new assignment
     await click(SELECTORS.assignmentCreateButton);
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.assignments.create',
       'navigates to create form'
     );
-    assert.dom('[data-test-oidc-assignment-title]').hasText('Create assignment', 'Form title renders');
     await fillIn('[data-test-input="name"]', 'test-assignment');
     await click('[data-test-component="search-select"]#entities .ember-basic-dropdown-trigger');
     await click('.ember-power-select-option');
     await click(SELECTORS.assignmentSaveButton);
-    assert.strictEqual(
+    assert.equal(
       flashMessage.latestMessage,
       'Successfully created the assignment test-assignment.',
       'renders success flash upon creating the assignment'
     );
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.assignments.assignment.details',
       'navigates to the assignments detail view after save'
@@ -242,17 +237,16 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
 
     // edit assignment
     await click(SELECTORS.assignmentEditButton);
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.assignments.assignment.edit',
       'navigates to the assignment edit page from details'
     );
-    assert.dom('[data-test-oidc-assignment-title]').hasText('Edit assignment', 'Form title renders');
     await click('[data-test-component="search-select"]#groups .ember-basic-dropdown-trigger');
     await click('.ember-power-select-option');
     assert.dom('[data-test-oidc-assignment-save]').hasText('Update');
     await click(SELECTORS.assignmentSaveButton);
-    assert.strictEqual(
+    assert.equal(
       flashMessage.latestMessage,
       'Successfully updated the assignment test-assignment.',
       'renders success flash upon updating the assignment'
@@ -264,12 +258,12 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
     // delete the assignment
     await click(SELECTORS.assignmentDeleteButton);
     await click(SELECTORS.confirmActionButton);
-    assert.strictEqual(
+    assert.equal(
       flashMessage.latestMessage,
       'Assignment deleted successfully',
       'renders success flash upon deleting assignment'
     );
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.assignments.index',
       'navigates back to assignment list view after delete'
@@ -290,13 +284,13 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
       .exists('displays linked block for test-assignment');
 
     await click(SELECTORS.assignmentCreateButton);
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.assignments.create',
       'assignments index toolbar navigates to create form'
     );
     await click(SELECTORS.assignmentCancelButton);
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.assignments.index',
       'create form navigates back to assignment index on cancel'
@@ -304,13 +298,13 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
 
     await click('[data-test-popup-menu-trigger]');
     await click('[data-test-oidc-assignment-menu-link="edit"]');
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.assignments.assignment.edit',
       'linked block popup menu navigates to edit'
     );
     await click(SELECTORS.assignmentCancelButton);
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.assignments.assignment.details',
       'edit form navigates back to assignment details on cancel'
@@ -319,7 +313,7 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
     await visit('/vault/access/oidc/assignments');
     await click('[data-test-popup-menu-trigger]');
     await click('[data-test-oidc-assignment-menu-link="details"]');
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.access.oidc.assignments.assignment.details',
       'popup menu navigates to assignment details'
@@ -346,7 +340,7 @@ module('Acceptance | oidc-config clients and assignments', function (hooks) {
     assert.dom(SELECTORS.assignmentDetailsTab).hasClass('active', 'details tab is active');
     assert.dom(SELECTORS.assignmentDeleteButton).doesNotExist('delete option is hidden');
     assert.dom(SELECTORS.assignmentEditButton).doesNotExist('edit button is hidden');
-    assert.strictEqual(
+    assert.equal(
       findAll('[data-test-component="info-table-row"]').length,
       3,
       'renders all assignment info rows'

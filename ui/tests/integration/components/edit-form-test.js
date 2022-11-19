@@ -44,31 +44,33 @@ module('Integration | Component | edit form', function (hooks) {
   });
 
   test('it renders', async function (assert) {
-    this.set('model', createModel());
-    await render(hbs`{{edit-form model=this.model}}`);
+    let model = createModel();
+    this.set('model', model);
+    await render(hbs`{{edit-form model=model}}`);
 
     assert.ok(component.fields.length, 2);
   });
 
   test('it calls flash message fns on save', async function (assert) {
     assert.expect(4);
-    const onSave = () => {
+    let model = createModel();
+    let onSave = () => {
       return resolve();
     };
-    this.set('model', createModel());
+    this.set('model', model);
     this.set('onSave', onSave);
-    const saveSpy = sinon.spy(this, 'onSave');
+    let saveSpy = sinon.spy(this, 'onSave');
 
-    await render(hbs`{{edit-form model=this.model onSave=this.onSave}}`);
+    await render(hbs`{{edit-form model=model onSave=onSave}}`);
 
     component.submit();
     later(() => cancelTimers(), 50);
     return settled().then(() => {
       assert.ok(saveSpy.calledOnce, 'calls passed onSave');
-      assert.strictEqual(saveSpy.getCall(0).args[0].saveType, 'save');
-      assert.deepEqual(saveSpy.getCall(0).args[0].model, this.model, 'passes model to onSave');
-      const flash = this.owner.lookup('service:flash-messages');
-      assert.strictEqual(flash.success.callCount, 1, 'calls flash message success');
+      assert.equal(saveSpy.getCall(0).args[0].saveType, 'save');
+      assert.deepEqual(saveSpy.getCall(0).args[0].model, model, 'passes model to onSave');
+      let flash = this.owner.lookup('service:flash-messages');
+      assert.equal(flash.success.callCount, 1, 'calls flash message success');
     });
   });
 });

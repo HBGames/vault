@@ -30,20 +30,12 @@ module('Acceptance | secrets/generic/create', function (hooks) {
     const kvPath = `generic-kv-${new Date().getTime()}`;
     await cli.runCommands([`write sys/mounts/${path} type=generic`, `write ${path}/foo bar=baz`]);
     await listPage.visitRoot({ backend: path });
-    assert.strictEqual(
-      currentRouteName(),
-      'vault.cluster.secrets.backend.list-root',
-      'navigates to the list page'
-    );
-    assert.strictEqual(listPage.secrets.length, 1, 'lists one secret in the backend');
+    assert.equal(currentRouteName(), 'vault.cluster.secrets.backend.list-root', 'navigates to the list page');
+    assert.equal(listPage.secrets.length, 1, 'lists one secret in the backend');
 
     await listPage.create();
     await editPage.createSecret(kvPath, 'foo', 'bar');
-    assert.strictEqual(
-      currentRouteName(),
-      'vault.cluster.secrets.backend.show',
-      'redirects to the show page'
-    );
+    assert.equal(currentRouteName(), 'vault.cluster.secrets.backend.show', 'redirects to the show page');
     assert.ok(showPage.editIsPresent, 'shows the edit button');
   });
 
@@ -57,16 +49,12 @@ module('Acceptance | secrets/generic/create', function (hooks) {
       `write sys/mounts/${path}/tune options=version=2`,
     ]);
     await listPage.visitRoot({ backend: path });
-    assert.strictEqual(
-      currentRouteName(),
-      'vault.cluster.secrets.backend.list-root',
-      'navigates to the list page'
-    );
-    assert.strictEqual(listPage.secrets.length, 1, 'lists the old secret in the backend');
+    assert.equal(currentRouteName(), 'vault.cluster.secrets.backend.list-root', 'navigates to the list page');
+    assert.equal(listPage.secrets.length, 1, 'lists the old secret in the backend');
 
     await listPage.create();
     await editPage.createSecret(kvPath, 'foo', 'bar');
     await listPage.visitRoot({ backend: path });
-    assert.strictEqual(listPage.secrets.length, 2, 'lists two secrets in the backend');
+    assert.equal(listPage.secrets.length, 2, 'lists two secrets in the backend');
   });
 });

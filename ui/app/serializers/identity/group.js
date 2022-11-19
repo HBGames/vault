@@ -14,7 +14,7 @@ export default IdentitySerializer.extend(EmbeddedRecordsMixin, {
   },
 
   serialize() {
-    const json = this._super(...arguments);
+    let json = this._super(...arguments);
     delete json.alias;
     if (json.type === 'external') {
       delete json.member_entity_ids;

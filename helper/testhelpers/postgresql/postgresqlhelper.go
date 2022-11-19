@@ -12,74 +12,44 @@ import (
 )
 
 func PrepareTestContainer(t *testing.T, version string) (func(), string) {
-	env := []string{
-		"POSTGRES_PASSWORD=secret",
-		"POSTGRES_DB=database",
-	}
-
-	_, cleanup, url, _ := prepareTestContainer(t, "postgres", "docker.mirror.hashicorp.services/postgres", version, "secret", true, false, false, env)
-
-	return cleanup, url
+	return prepareTestContainer(t, version, "secret", "database")
 }
 
 func PrepareTestContainerWithPassword(t *testing.T, version, password string) (func(), string) {
-	env := []string{
-		"POSTGRES_PASSWORD=" + password,
-		"POSTGRES_DB=database",
-	}
-
-	_, cleanup, url, _ := prepareTestContainer(t, "postgres", "docker.mirror.hashicorp.services/postgres", version, password, true, false, false, env)
-
-	return cleanup, url
+	return prepareTestContainer(t, version, password, "database")
 }
 
-func PrepareTestContainerRepmgr(t *testing.T, name, version string, envVars []string) (*docker.Runner, func(), string, string) {
-	env := append(envVars,
-		"REPMGR_PARTNER_NODES=psql-repl-node-0,psql-repl-node-1",
-		"REPMGR_PRIMARY_HOST=psql-repl-node-0",
-		"REPMGR_PASSWORD=repmgrpass",
-		"POSTGRESQL_PASSWORD=secret")
-
-	return prepareTestContainer(t, name, "docker.mirror.hashicorp.services/bitnami/postgresql-repmgr", version, "secret", false, true, true, env)
-}
-
-func prepareTestContainer(t *testing.T, name, repo, version, password string,
-	addSuffix, forceLocalAddr, doNotAutoRemove bool, envVars []string,
-) (*docker.Runner, func(), string, string) {
+func prepareTestContainer(t *testing.T, version, password, db string) (func(), string) {
 	if os.Getenv("PG_URL") != "" {
-		return nil, func() {}, "", os.Getenv("PG_URL")
+		return func() {}, os.Getenv("PG_URL")
 	}
 
 	if version == "" {
 		version = "11"
 	}
 
-	runOpts := docker.RunOptions{
-		ContainerName:   name,
-		ImageRepo:       repo,
-		ImageTag:        version,
-		Env:             envVars,
-		Ports:           []string{"5432/tcp"},
-		DoNotAutoRemove: doNotAutoRemove,
-	}
-	if repo == "bitnami/postgresql-repmgr" {
-		runOpts.NetworkID = os.Getenv("POSTGRES_MULTIHOST_NET")
-	}
-
-	runner, err := docker.NewServiceRunner(runOpts)
+	runner, err := docker.NewServiceRunner(docker.RunOptions{
+		ImageRepo: "postgres",
+		ImageTag:  version,
+		Env: []string{
+			"POSTGRES_PASSWORD=" + password,
+			"POSTGRES_DB=" + db,
+		},
+		Ports: []string{"5432/tcp"},
+	})
 	if err != nil {
 		t.Fatalf("Could not start docker Postgres: %s", err)
 	}
 
-	svc, containerID, err := runner.StartNewService(context.Background(), addSuffix, forceLocalAddr, connectPostgres(password, repo))
+	svc, err := runner.StartService(context.Background(), connectPostgres(password))
 	if err != nil {
 		t.Fatalf("Could not start docker Postgres: %s", err)
 	}
 
-	return runner, svc.Cleanup, svc.Config.URL().String(), containerID
+	return svc.Cleanup, svc.Config.URL().String()
 }
 
-func connectPostgres(password, repo string) docker.ServiceAdapter {
+func connectPostgres(password string) docker.ServiceAdapter {
 	return func(ctx context.Context, host string, port int) (docker.ServiceConfig, error) {
 		u := url.URL{
 			Scheme:   "postgres",
@@ -95,21 +65,10 @@ func connectPostgres(password, repo string) docker.ServiceAdapter {
 		}
 		defer db.Close()
 
-		if err = db.Ping(); err != nil {
+		err = db.Ping()
+		if err != nil {
 			return nil, err
 		}
 		return docker.NewServiceURL(u), nil
-	}
-}
-
-func StopContainer(t *testing.T, ctx context.Context, runner *docker.Runner, containerID string) {
-	if err := runner.Stop(ctx, containerID); err != nil {
-		t.Fatalf("Could not stop docker Postgres: %s", err)
-	}
-}
-
-func RestartContainer(t *testing.T, ctx context.Context, runner *docker.Runner, containerID string) {
-	if err := runner.Restart(ctx, containerID); err != nil {
-		t.Fatalf("Could not restart docker Postgres: %s", err)
 	}
 }

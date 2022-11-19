@@ -63,7 +63,7 @@ export default Route.extend(ModelBoundaryRoute, ClusterRoute, {
         this.transitionTo({ queryParams: { namespace } });
       }
     } else if (managedRoot !== null) {
-      const managed = getManagedNamespace(namespace, managedRoot);
+      let managed = getManagedNamespace(namespace, managedRoot);
       if (managed !== namespace) {
         this.transitionTo({ queryParams: { namespace: managed } });
       }
@@ -135,7 +135,7 @@ export default Route.extend(ModelBoundaryRoute, ClusterRoute, {
         return;
       }
       // eslint-disable-next-line ember/no-controller-access-in-routes
-      const controller = this.controllerFor('vault.cluster');
+      let controller = this.controllerFor('vault.cluster');
       controller.set('currentlyLoading', true);
 
       transition.finally(function () {

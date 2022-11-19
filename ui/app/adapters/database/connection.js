@@ -16,7 +16,7 @@ export default ApplicationAdapter.extend({
     return url;
   },
   optionsForQuery(id) {
-    const data = {};
+    let data = {};
     if (!id) {
       data['list'] = true;
     }

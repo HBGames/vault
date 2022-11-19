@@ -51,30 +51,30 @@ module('Integration | Component | config pki ca', function (hooks) {
     const refreshFn = onRefresh || function () {};
     context.set('config', config());
     context.set('onRefresh', refreshFn);
-    await context.render(hbs`<Pki::ConfigPkiCa @onRefresh={{this.onRefresh}} @config={{this.config}} />`);
+    await context.render(hbs`<Pki::ConfigPkiCa @onRefresh={{onRefresh}} @config={{config}} />`);
   };
 
   test('it renders, no pem', async function (assert) {
     await setupAndRender(this);
 
     assert.notOk(component.hasTitle, 'no title in the default state');
-    assert.strictEqual(component.replaceCAText, 'Configure CA');
-    assert.strictEqual(component.downloadLinks.length, 0, 'there are no download links');
+    assert.equal(component.replaceCAText, 'Configure CA');
+    assert.equal(component.downloadLinks.length, 0, 'there are no download links');
 
     await component.replaceCA();
-    assert.strictEqual(component.title, 'Configure CA Certificate');
+    assert.equal(component.title, 'Configure CA Certificate');
     await component.back();
 
     await component.setSignedIntermediateBtn();
-    assert.strictEqual(component.title, 'Set signed intermediate');
+    assert.equal(component.title, 'Set signed intermediate');
   });
 
   test('it renders, with pem', async function (assert) {
     const c = config('pem');
     this.set('config', c);
-    await render(hbs`<Pki::ConfigPkiCa @config={{this.config}} />`);
+    await render(hbs`<Pki::ConfigPkiCa @config={{config}} />`);
     assert.notOk(component.hasTitle, 'no title in the default state');
-    assert.strictEqual(component.replaceCAText, 'Add CA');
-    assert.strictEqual(component.downloadLinks.length, 3, 'shows download links');
+    assert.equal(component.replaceCAText, 'Add CA');
+    assert.equal(component.downloadLinks.length, 3, 'shows download links');
   });
 });

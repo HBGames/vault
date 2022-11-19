@@ -5,8 +5,6 @@ import { inject as service } from '@ember/service';
 
 export default Component.extend({
   flashMessages: service(),
-  auth: service(),
-
   useServiceWorker: null,
 
   async init() {
@@ -18,40 +16,20 @@ export default Component.extend({
     if ('serviceWorker' in navigator) {
       // this checks to see if there's an active service worker - if it failed to register
       // for any reason, then this would be null
-      const worker = await navigator.serviceWorker.getRegistration(config.serviceWorkerScope);
+      let worker = await navigator.serviceWorker.getRegistration(config.serviceWorkerScope);
       if (worker) {
-        navigator.serviceWorker.addEventListener('message', this.serviceWorkerGetToken.bind(this));
-
         this.set('useServiceWorker', true);
       }
-    }
-  },
-  willDestroy() {
-    if (this.useServiceWorker) {
-      navigator.serviceWorker.removeEventListener('message', this.serviceWorkerGetToken);
-    }
-    this._super(...arguments);
-  },
-
-  serviceWorkerGetToken(event) {
-    const { action } = event.data;
-    const [port] = event.ports;
-
-    if (action === 'getToken') {
-      port.postMessage({ token: this.auth.currentToken });
-    } else {
-      console.error('Unknown event', event); // eslint-disable-line
-      port.postMessage({ error: 'Unknown request' });
     }
   },
 
   actions: {
     async removePeer(model) {
-      const { nodeId } = model;
+      let { nodeId } = model;
       try {
         await model.destroyRecord();
       } catch (e) {
-        const errString = e.errors ? e.errors.join(' ') : e.message || e;
+        let errString = e.errors ? e.errors.join(' ') : e.message || e;
         this.flashMessages.danger(`There was an issue removing the peer ${nodeId}: ${errString}`);
         return;
       }
@@ -72,7 +50,7 @@ export default Component.extend({
       // then forcing a download by clicking a link that has a download attribute
       //
       // this is not the default because
-      const adapter = getOwner(this).lookup('adapter:application');
+      let adapter = getOwner(this).lookup('adapter:application');
 
       this.flashMessages.success('The snapshot download has begun.');
       let resp, blob;
@@ -80,18 +58,18 @@ export default Component.extend({
         resp = await adapter.rawRequest('/v1/sys/storage/raft/snapshot', 'GET');
         blob = await resp.blob();
       } catch (e) {
-        const errString = e.errors ? e.errors.join(' ') : e.message || e;
+        let errString = e.errors ? e.errors.join(' ') : e.message || e;
         this.flashMessages.danger(`There was an error trying to download the snapshot: ${errString}`);
       }
-      const filename = 'snapshot.gz';
-      const file = new Blob([blob], { type: 'application/x-gzip' });
+      let filename = 'snapshot.gz';
+      let file = new Blob([blob], { type: 'application/x-gzip' });
       file.name = filename;
       if ('msSaveOrOpenBlob' in navigator) {
         navigator.msSaveOrOpenBlob(file, filename);
         return;
       }
-      const a = document.createElement('a');
-      const objectURL = window.URL.createObjectURL(file);
+      let a = document.createElement('a');
+      let objectURL = window.URL.createObjectURL(file);
       a.href = objectURL;
       a.download = filename;
       document.body.appendChild(a);

@@ -2,7 +2,6 @@ package aws
 
 import (
 	"os"
-	"sync"
 	"testing"
 
 	stepwise "github.com/hashicorp/vault-testing-stepwise"
@@ -10,8 +9,6 @@ import (
 	"github.com/hashicorp/vault/api"
 	"github.com/mitchellh/mapstructure"
 )
-
-var stepwiseSetup sync.Once
 
 func TestAccBackend_Stepwise_basic(t *testing.T) {
 	t.Parallel()
@@ -85,7 +82,7 @@ func testAccStepwiseRead(t *testing.T, path, name string, credentialTests []cred
 }
 
 func testAccStepwisePreCheck(t *testing.T) {
-	stepwiseSetup.Do(func() {
+	initSetup.Do(func() {
 		if v := os.Getenv("AWS_DEFAULT_REGION"); v == "" {
 			t.Logf("[INFO] Test: Using us-west-2 as test region")
 			os.Setenv("AWS_DEFAULT_REGION", "us-west-2")

@@ -33,7 +33,7 @@ module('Integration | Component | clients/line-chart', function (hooks) {
   test('it renders', async function (assert) {
     await render(hbs`
     <div class="chart-container-wide">
-      <Clients::LineChart @dataset={{this.dataset}} @xKey={{this.xKey}} @yKey={{this.yKey}} />
+      <Clients::LineChart @dataset={{dataset}} @xKey={{xKey}} @yKey={{yKey}} />
       </div>
     `);
 
@@ -79,10 +79,10 @@ module('Integration | Component | clients/line-chart', function (hooks) {
     await render(hbs`
     <div class="chart-container-wide">
       <Clients::LineChart 
-        @dataset={{this.dataset}} 
-        @upgradeData={{this.upgradeData}} 
-        @xKey={{this.xKey}} 
-        @yKey={{this.yKey}} 
+        @dataset={{dataset}} 
+        @upgradeData={{upgradeData}} 
+        @xKey={{xKey}} 
+        @yKey={{yKey}} 
       />
     </div>
     `);
@@ -137,17 +137,17 @@ module('Integration | Component | clients/line-chart', function (hooks) {
     await render(hbs`
     <div class="chart-container-wide">
       <Clients::LineChart 
-        @dataset={{this.dataset}} 
-        @upgradeData={{this.upgradeData}}
+        @dataset={{dataset}} 
+        @upgradeData={{upgradeData}}
       />
     </div>
     `);
 
     const tooltipHoverCircles = findAll('[data-test-line-chart] circle.hover-circle');
-    for (const [i, bar] of tooltipHoverCircles.entries()) {
+    for (let [i, bar] of tooltipHoverCircles.entries()) {
       await triggerEvent(bar, 'mouseover');
-      const tooltip = document.querySelector('.ember-modal-dialog');
-      const { month, clients, new_clients } = tooltipData[i];
+      let tooltip = document.querySelector('.ember-modal-dialog');
+      let { month, clients, new_clients } = tooltipData[i];
       assert
         .dom(tooltip)
         .includesText(
@@ -162,10 +162,10 @@ module('Integration | Component | clients/line-chart', function (hooks) {
     await render(hbs`
     <div class="chart-container-wide">
     <Clients::LineChart 
-    @dataset={{this.dataset}} 
-    @upgradeData={{this.upgradeData}} 
-    @xKey={{this.xKey}} 
-    @yKey={{this.yKey}} 
+    @dataset={{dataset}} 
+    @upgradeData={{upgradeData}} 
+    @xKey={{xKey}} 
+    @yKey={{yKey}} 
     />
     </div>
     `);
@@ -180,10 +180,10 @@ module('Integration | Component | clients/line-chart', function (hooks) {
     await render(hbs`
     <div class="chart-container-wide">
     <Clients::LineChart 
-    @dataset={{this.dataset}} 
-    @upgradeData={{this.upgradeData}} 
-    @xKey={{this.xKey}} 
-    @yKey={{this.yKey}} 
+    @dataset={{dataset}} 
+    @upgradeData={{upgradeData}} 
+    @xKey={{xKey}} 
+    @yKey={{yKey}} 
     />
     </div>
     `);

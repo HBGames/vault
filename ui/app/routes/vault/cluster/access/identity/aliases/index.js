@@ -1,13 +1,10 @@
 import Route from '@ember/routing/route';
 import ListRoute from 'core/mixins/list-route';
-import { inject as service } from '@ember/service';
 
 export default Route.extend(ListRoute, {
-  store: service(),
-
   model(params) {
-    const itemType = this.modelFor('vault.cluster.access.identity');
-    const modelType = `identity/${itemType}-alias`;
+    let itemType = this.modelFor('vault.cluster.access.identity');
+    let modelType = `identity/${itemType}-alias`;
     return this.store
       .lazyPaginatedQuery(modelType, {
         responsePath: 'data.keys',
@@ -22,12 +19,10 @@ export default Route.extend(ListRoute, {
         }
       });
   },
-
   setupController(controller) {
     this._super(...arguments);
     controller.set('identityType', this.modelFor('vault.cluster.access.identity'));
   },
-
   actions: {
     willTransition(transition) {
       window.scrollTo(0, 0);

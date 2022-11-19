@@ -27,7 +27,7 @@ export default ApplicationSerializer.extend({
         return { id: fullSecretPath, backend: payload.backend };
       });
     }
-    const path = this.secretDataPath;
+    let path = this.secretDataPath;
     // move response that is the contents of the secret from the dataPath
     // to `secret_data` so it will be `secretData` in the model
     payload.secret_data = get(payload, path);

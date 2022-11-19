@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 module('Unit | Adapter | kmip/role', function (hooks) {
   setupTest(hooks);
 
-  const serializeTests = [
+  let serializeTests = [
     [
       'operation_all is the only operation item present after serialization',
       {
@@ -72,11 +72,11 @@ module('Unit | Adapter | kmip/role', function (hooks) {
       },
     ],
   ];
-  for (const testCase of serializeTests) {
-    const [name, snapshotStub, expected] = testCase;
+  for (let testCase of serializeTests) {
+    let [name, snapshotStub, expected] = testCase;
     test(`adapter serialize: ${name}`, function (assert) {
-      const adapter = this.owner.lookup('adapter:kmip/role');
-      const result = adapter.serialize(snapshotStub);
+      let adapter = this.owner.lookup('adapter:kmip/role');
+      let result = adapter.serialize(snapshotStub);
       assert.deepEqual(result, expected, 'output matches expected');
     });
   }

@@ -25,8 +25,8 @@ export default Component.extend({
 
   actions: {
     performTransaction() {
-      const args = [...arguments];
-      const messageArgs = this.messageArgs(...args);
+      let args = [...arguments];
+      let messageArgs = this.messageArgs(...args);
       return this.transaction(...args)
         .then(() => {
           this.onSuccess();

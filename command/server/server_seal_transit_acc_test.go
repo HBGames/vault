@@ -131,9 +131,8 @@ func prepareTestContainer(t *testing.T) (func(), *DockerVaultConfig) {
 	}
 
 	runner, err := docker.NewServiceRunner(docker.RunOptions{
-		ContainerName: "vault",
-		ImageRepo:     "docker.mirror.hashicorp.services/hashicorp/vault",
-		ImageTag:      "latest",
+		ImageRepo: "vault",
+		ImageTag:  "latest",
 		Cmd: []string{
 			"server", "-log-level=trace", "-dev", fmt.Sprintf("-dev-root-token-id=%s", rootToken),
 			"-dev-listen-address=0.0.0.0:8200",

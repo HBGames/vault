@@ -8,8 +8,7 @@ import { alias } from '@ember/object/computed';
 import { maybeQueryRecord } from 'vault/macros/maybe-query-record';
 
 const getErrorMessage = (errors) => {
-  const errorMessage =
-    errors?.join('. ') || 'Something went wrong. Check the Vault logs for more information.';
+  let errorMessage = errors?.join('. ') || 'Something went wrong. Check the Vault logs for more information.';
   return errorMessage;
 };
 export default class SecretDeleteMenu extends Component {
@@ -23,7 +22,7 @@ export default class SecretDeleteMenu extends Component {
     'capabilities',
     (context) => {
       if (!context.args || !context.args.modelForData || !context.args.modelForData.id) return;
-      const [backend, id] = JSON.parse(context.args.modelForData.id);
+      let [backend, id] = JSON.parse(context.args.modelForData.id);
       return {
         id: `${backend}/undelete/${id}`,
       };
@@ -37,7 +36,7 @@ export default class SecretDeleteMenu extends Component {
     'capabilities',
     (context) => {
       if (!context.args || !context.args.modelForData || !context.args.modelForData.id) return;
-      const [backend, id] = JSON.parse(context.args.modelForData.id);
+      let [backend, id] = JSON.parse(context.args.modelForData.id);
       return {
         id: `${backend}/destroy/${id}`,
       };
@@ -51,8 +50,8 @@ export default class SecretDeleteMenu extends Component {
     'capabilities',
     (context) => {
       if (!context.args.model || !context.args.model.engine || !context.args.model.id) return;
-      const backend = context.args.model.engine.id;
-      const id = context.args.model.id;
+      let backend = context.args.model.engine.id;
+      let id = context.args.model.id;
       return {
         id: `${backend}/metadata/${id}`,
       };
@@ -70,9 +69,9 @@ export default class SecretDeleteMenu extends Component {
       if (!context.args.model || context.args.mode === 'create') {
         return;
       }
-      const backend = context.args.isV2 ? context.args.model.engine.id : context.args.model.backend;
-      const id = context.args.model.id;
-      const path = context.args.isV2 ? `${backend}/data/${id}` : `${backend}/${id}`;
+      let backend = context.args.isV2 ? context.args.model.engine.id : context.args.model.backend;
+      let id = context.args.model.id;
+      let path = context.args.isV2 ? `${backend}/data/${id}` : `${backend}/${id}`;
       return {
         id: path,
       };
@@ -91,9 +90,9 @@ export default class SecretDeleteMenu extends Component {
       if (!context.args.model || context.args.mode === 'create') {
         return;
       }
-      const backend = context.args.isV2 ? context.args.model.engine.id : context.args.model.backend;
-      const id = context.args.model.id;
-      const path = context.args.isV2 ? `${backend}/delete/${id}` : `${backend}/${id}`;
+      let backend = context.args.isV2 ? context.args.model.engine.id : context.args.model.backend;
+      let id = context.args.model.id;
+      let path = context.args.isV2 ? `${backend}/delete/${id}` : `${backend}/${id}`;
       return {
         id: path,
       };
@@ -108,10 +107,10 @@ export default class SecretDeleteMenu extends Component {
 
   get isLatestVersion() {
     // must have metadata access.
-    const { model } = this.args;
+    let { model } = this.args;
     if (!model) return false;
-    const latestVersion = model.currentVersion;
-    const selectedVersion = model.selectedVersion.version;
+    let latestVersion = model.currentVersion;
+    let selectedVersion = model.selectedVersion.version;
     if (latestVersion !== selectedVersion) {
       return false;
     }

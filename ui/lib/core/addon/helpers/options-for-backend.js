@@ -203,7 +203,7 @@ export function optionsForBackend([backend, tab, isEngine]) {
   let backendOptions;
 
   if (selected && selected.tabs) {
-    const tabData =
+    let tabData =
       selected.tabs.findBy('name', tab) || selected.tabs.findBy('modelPrefix', tab) || selected.tabs[0];
     backendOptions = assign({}, selected, tabData);
   } else if (selected) {

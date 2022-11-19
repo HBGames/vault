@@ -39,7 +39,7 @@
       </ConfirmAction>
     {{/if}}
     {{#if this.model.canEdit}}
-      <ToolbarLink @route="vault.cluster.access.oidc.keys.key.edit" @model={{this.model.name}} data-test-oidc-key-edit>
+      <ToolbarLink data-test-oidc-key-edit @params={{array "vault.cluster.access.oidc.keys.key.edit" this.model.name}}>
         Edit key
       </ToolbarLink>
     {{/if}}

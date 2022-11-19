@@ -22,7 +22,7 @@ export default RESTSerializer.extend({
   normalizeResponse(store, primaryModelClass, payload, id, requestType) {
     const credentials = this.normalizePayload(payload);
     const { modelName } = primaryModelClass;
-    const transformedPayload = { [modelName]: credentials };
+    let transformedPayload = { [modelName]: credentials };
 
     return this._super(store, primaryModelClass, transformedPayload, id, requestType);
   },

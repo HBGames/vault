@@ -4,7 +4,6 @@ import ClusterRoute from 'vault/mixins/cluster-route';
 import ListRoute from 'core/mixins/list-route';
 
 export default Route.extend(ClusterRoute, ListRoute, {
-  store: service(),
   version: service(),
   wizard: service(),
 
@@ -19,7 +18,7 @@ export default Route.extend(ClusterRoute, ListRoute, {
   },
 
   model(params) {
-    const policyType = this.policyType();
+    let policyType = this.policyType();
     if (this.shouldReturnEmptyModel(policyType, this.version)) {
       return;
     }
@@ -62,7 +61,6 @@ export default Route.extend(ClusterRoute, ListRoute, {
       controller.set('filter', '');
     }
   },
-
   actions: {
     willTransition(transition) {
       window.scrollTo(0, 0);

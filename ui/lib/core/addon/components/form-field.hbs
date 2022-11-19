@@ -1,13 +1,23 @@
 {{! template-lint-configure simple-unless "warn" }}
 <div class="field" data-test-field={{or @attr.name true}}>
-  {{#unless this.hideLabel}}
-    <FormFieldLabel
-      for={{@attr.name}}
-      @label={{this.labelString}}
-      @helpText={{(if this.showHelpText @attr.options.helpText)}}
-      @subText={{@attr.options.subText}}
-      @docLink={{@attr.options.docLink}}
-    />
+  {{#unless
+    (or
+      (eq @attr.type "boolean")
+      (contains
+        @attr.options.editType
+        (array "boolean" "optionalText" "searchSelect" "mountAccessor" "kv" "file" "ttl" "stringArray" "json" "regex")
+      )
+    )
+  }}
+    {{#unless (eq @attr.type "object")}}
+      <FormFieldLabel
+        for={{@attr.name}}
+        @label={{this.labelString}}
+        @helpText={{@attr.options.helpText}}
+        @subText={{@attr.options.subText}}
+        @docLink={{@attr.options.docLink}}
+      />
+    {{/unless}}
   {{/unless}}
   {{#if @attr.options.possibleValues}}
     {{#if (eq @attr.options.editType "radio")}}
@@ -61,7 +71,7 @@
 
       <label for={{@attr.name}} class="is-label">
         {{this.labelString}}
-        {{#if (and this.showHelpText @attr.options.helpText)}}
+        {{#if @attr.options.helpText}}
           <InfoTooltip>{{@attr.options.helpText}}</InfoTooltip>
         {{/if}}
       </label>
@@ -73,15 +83,16 @@
         @models={{@attr.options.models}}
         @onChange={{this.setAndBroadcast}}
         @inputValue={{get @model this.valuePath}}
+        @helpText={{@attr.options.helpText}}
+        @subText={{@attr.options.subText}}
         @wildcardLabel={{@attr.options.wildcardLabel}}
         @label={{this.labelString}}
-        @labelClass={{if @attr.options.isSectionHeader "title is-4" "is-label"}}
-        @subText={{@attr.options.subText}}
-        @helpText={{@attr.options.helpText}}
+        @subLabel={{@attr.options.subLabel}}
         @fallbackComponent={{@attr.options.fallbackComponent}}
         @selectLimit={{@attr.options.selectLimit}}
         @backend={{@model.backend}}
         @disallowNewItems={{@attr.options.onlyAllowExisting}}
+        @labelClass={{@labelClass}}
         class={{if this.validationError "dropdown-has-error-border"}}
       />
     </div>
@@ -194,12 +205,10 @@
       data-test-input={{@attr.name}}
       @label={{this.labelString}}
       @warning={{@attr.options.warning}}
-      @helpText={{if this.showHelpText @attr.options.helpText}}
+      @helpText={{@attr.options.helpText}}
       @inputValue={{get @model this.valuePath}}
       @onChange={{this.setAndBroadcast}}
       @attrName={{@attr.name}}
-      @subText={{@attr.options.subText}}
-      @hideFormSection={{@attr.options.hideFormSection}}
     />
   {{else if (eq @attr.options.sensitive true)}}
     {{! Masked Input }}
@@ -312,6 +321,7 @@
         onchange={{this.onChangeWithEvent}}
         data-test-input={{@attr.name}}
       />
+
       <label for={{@attr.name}} class="is-label">
         {{this.labelString}}
         {{#if (and this.showHelpText @attr.options.helpText)}}
@@ -319,14 +329,7 @@
         {{/if}}
       </label>
       {{#if @attr.options.subText}}
-        <p class="sub-text">
-          {{@attr.options.subText}}
-          {{#if @attr.options.docLink}}
-            <DocLink @path={{@attr.options.docLink}}>
-              Learn more here.
-            </DocLink>
-          {{/if}}
-        </p>
+        <p class="sub-text">{{@attr.options.subText}}</p>
       {{/if}}
     </div>
   {{else if (eq @attr.type "object")}}
@@ -336,7 +339,5 @@
       @valueUpdated={{fn this.codemirrorUpdated false}}
       @helpText={{@attr.options.helpText}}
     />
-  {{else if (eq @attr.options.editType "yield")}}
-    {{yield}}
   {{/if}}
 </div>

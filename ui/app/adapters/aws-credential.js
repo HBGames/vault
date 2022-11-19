@@ -2,12 +2,12 @@ import ApplicationAdapter from './application';
 
 export default ApplicationAdapter.extend({
   createRecord(store, type, snapshot) {
-    const ttl = snapshot.attr('ttl');
-    const roleArn = snapshot.attr('roleArn');
-    const roleType = snapshot.attr('credentialType');
+    let ttl = snapshot.attr('ttl');
+    let roleArn = snapshot.attr('roleArn');
+    let roleType = snapshot.attr('credentialType');
     let method = 'POST';
     let options;
-    const data = {};
+    let data = {};
     if (roleType === 'iam_user') {
       method = 'GET';
     } else {
@@ -19,8 +19,8 @@ export default ApplicationAdapter.extend({
       }
       options = data.ttl || data.role_arn ? { data } : {};
     }
-    const role = snapshot.attr('role');
-    const url = `/v1/${role.backend}/creds/${role.name}`;
+    let role = snapshot.attr('role');
+    let url = `/v1/${role.backend}/creds/${role.name}`;
 
     return this.ajax(url, method, options).then((response) => {
       response.id = snapshot.id;

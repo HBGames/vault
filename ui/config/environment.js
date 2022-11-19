@@ -2,12 +2,12 @@
 'use strict';
 
 module.exports = function (environment) {
-  const ENV = {
+  let ENV = {
     modulePrefix: 'vault',
-    environment,
+    environment: environment,
     rootURL: '/ui/',
     serviceWorkerScope: '/v1/sys/storage/raft/snapshot',
-    locationType: 'history',
+    locationType: 'auto',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -68,6 +68,16 @@ module.exports = function (environment) {
   }
   if (environment !== 'production') {
     ENV.APP.DEFAULT_PAGE_SIZE = 15;
+    ENV.contentSecurityPolicyHeader = 'Content-Security-Policy';
+    ENV.contentSecurityPolicyMeta = true;
+    ENV.contentSecurityPolicy = {
+      'connect-src': ["'self'"],
+      'img-src': ["'self'", 'data:'],
+      'font-src': ["'self'"],
+      'form-action': ["'none'"],
+      'script-src': ["'self'"],
+      'style-src': ["'unsafe-inline'", "'self'"],
+    };
   }
 
   ENV.welcomeMessage = process.env.UI_AUTH_WELCOME;

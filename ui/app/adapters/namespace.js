@@ -12,12 +12,12 @@ export default ApplicationAdapter.extend({
   },
 
   urlForCreateRecord(modelName, snapshot) {
-    const id = snapshot.attr('path');
+    let id = snapshot.attr('path');
     return this.buildURL(modelName, id);
   },
 
   createRecord(store, type, snapshot) {
-    const id = snapshot.attr('path');
+    let id = snapshot.attr('path');
     return this._super(...arguments).then(() => {
       return { id };
     });

@@ -1,7 +1,9 @@
 import Controller from '@ember/controller';
 
 export default class MfaMethodsListController extends Controller {
-  queryParams = ['page'];
+  queryParams = {
+    page: 'page',
+  };
 
   page = 1;
 }

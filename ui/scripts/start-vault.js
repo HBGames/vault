@@ -21,7 +21,7 @@ async function processLines(input, eachLine = () => {}) {
 
 (async function () {
   try {
-    const vault = testHelper.run(
+    let vault = testHelper.run(
       'vault',
       [
         'server',

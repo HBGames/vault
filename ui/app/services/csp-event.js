@@ -24,7 +24,7 @@ export default Service.extend({
     this.events.clear();
 
     while (true) {
-      const event = yield waitForEvent(window.document, 'securitypolicyviolation');
+      let event = yield waitForEvent(window.document, 'securitypolicyviolation');
       this.events.addObject(event);
     }
   }),

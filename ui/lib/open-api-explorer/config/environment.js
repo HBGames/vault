@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = function (environment) {
-  const ENV = {
+  let ENV = {
     modulePrefix: 'open-api-explorer',
     environment,
     APP: {

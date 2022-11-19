@@ -13,15 +13,11 @@ module('Acceptance | policy/acl/:name', function (hooks) {
 
   test('it redirects to list if navigating to root', async function (assert) {
     await page.visit({ type: 'acl', name: 'root' });
-    assert.strictEqual(
-      currentURL(),
-      '/vault/policies/acl',
-      'navigation to root show redirects you to policy list'
-    );
+    assert.equal(currentURL(), '/vault/policies/acl', 'navigation to root show redirects you to policy list');
   });
 
   test('it navigates to edit when the toggle is clicked', async function (assert) {
     await page.visit({ type: 'acl', name: 'default' }).toggleEdit();
-    assert.strictEqual(currentURL(), '/vault/policy/acl/default/edit', 'toggle navigates to edit page');
+    assert.equal(currentURL(), '/vault/policy/acl/default/edit', 'toggle navigates to edit page');
   });
 });

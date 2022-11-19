@@ -187,6 +187,7 @@ event "enos-verify-stable" {
     on = "fail"
   }
 }
+
 ## These events are publish and post-publish events and should be added to the end of the file
 ## after the verify event stanza.
 

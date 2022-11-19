@@ -18,9 +18,9 @@ module('helper:has-feature', function (hooks) {
   });
 
   test('it asserts on unknown features', async function (assert) {
-    const promise = waitForError();
+    let promise = waitForError();
     render(hbs`{{has-feature 'New Feature'}}`);
-    const err = await promise;
+    let err = await promise;
     assert.ok(
       err.message.includes('New Feature is not one of the available values for Vault Enterprise features.'),
       'asserts when an unknown feature is passed as an arg'

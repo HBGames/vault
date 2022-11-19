@@ -22,8 +22,8 @@ export default RESTSerializer.extend({
 
   normalizeItems(payload) {
     if (payload.data && payload.data.keys && Array.isArray(payload.data.keys)) {
-      const ret = payload.data.keys.map((key) => {
-        const model = {
+      let ret = payload.data.keys.map((key) => {
+        let model = {
           id_for_nav: `cert/${key}`,
           id: key,
         };

@@ -13,7 +13,7 @@ export default Route.extend({
     return this.pathHelp.getNewModel('kmip/role', this.secretMountPath.currentPath);
   },
   model() {
-    const model = this.store.createRecord('kmip/role', {
+    let model = this.store.createRecord('kmip/role', {
       backend: this.secretMountPath.currentPath,
       scope: this.scope(),
     });

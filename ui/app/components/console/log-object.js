@@ -16,7 +16,7 @@ export function stringifyObjectValues(data) {
 export default Component.extend({
   content: null,
   columns: computed('content', function () {
-    const data = this.content;
+    let data = this.content;
     stringifyObjectValues(data);
 
     return columnify(data, {

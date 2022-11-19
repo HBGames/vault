@@ -31,9 +31,9 @@
       @placeholder="Filter leases"
     />
     {{#if this.filterFocused}}
-      {{! template-lint-disable no-whitespace-for-layout }}
+      {{!template-lint-configure no-whitespace-for-layout "warn"}}
       &nbsp; &nbsp;
-      {{! template-lint-enable no-whitespace-for-layout }}
+      {{!template-lint-configure no-whitespace-for-layout "on"}}
       {{#if this.filterMatchesKey}}
         {{#unless this.filterIsFolder}}
           <p class="help has-text-grey is-size-8">

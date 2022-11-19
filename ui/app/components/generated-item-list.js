@@ -31,7 +31,7 @@ export default class GeneratedItemList extends Component {
 
   @action
   refreshItemList() {
-    const route = getOwner(this).lookup(`route:${this.router.currentRouteName}`);
+    let route = getOwner(this).lookup(`route:${this.router.currentRouteName}`);
     this.store.clearAllDatasets();
     route.refresh();
   }

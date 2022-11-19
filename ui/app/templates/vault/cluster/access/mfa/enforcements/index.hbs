@@ -10,7 +10,11 @@
 
 <Toolbar>
   <ToolbarActions>
-    <ToolbarLink @route="vault.cluster.access.mfa.enforcements.create" @type="add" data-test-enforcement-create>
+    <ToolbarLink
+      @type="add"
+      @params={{array "vault.cluster.access.mfa.enforcements.create"}}
+      data-test-enforcement-create={{true}}
+    >
       New enforcement
     </ToolbarLink>
   </ToolbarActions>

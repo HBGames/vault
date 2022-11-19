@@ -25,7 +25,7 @@
   </p.levelLeft>
 </PageHeader>
 
-<form {{on "submit" (perform this.save)}} {{did-insert this.setIssuer @model}}>
+<form {{on "submit" (perform this.save)}}>
   <div class="box is-sideless is-fullwidth is-bottomless">
     <MessageError @errorMessage={{this.errorBanner}} class="has-top-margin-s" />
     {{! name field }}
@@ -60,6 +60,7 @@
       @attr={{get @model.formFields "2"}}
       @model={{@model}}
       @modelValidations={{this.modelValidations}}
+      @labelClass="is-label"
     />
   </div>
   {{! RADIO CARD + SEARCH SELECT }}
@@ -86,7 +87,7 @@
     {{#if (eq this.radioCardGroupValue "limited")}}
       <SearchSelect
         @id="allowedClientIds"
-        @label="Application name"
+        @subLabel="Application name"
         @models={{array "oidc/client"}}
         @inputValue={{@model.allowedClientIds}}
         @onChange={{this.handleClientSelection}}
@@ -94,7 +95,7 @@
         @fallbackComponent="string-list"
         @passObject={{true}}
         @objectKeys={{array "clientId"}}
-        @renderInfoTooltip={{this.renderInfoTooltip}}
+        @renderInfoTooltip={{true}}
       />
     {{/if}}
   </div>

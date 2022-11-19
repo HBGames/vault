@@ -29,7 +29,7 @@ variable "distro" {}
 variable "edition" {}
 variable "instance_type" {}
 variable "revision" {}
-variable "product_version" {}
+variable "vault_product_version" {}
 variable "build_tags" { default = null }
 variable "bundle_path" { default = null }
 variable "goarch" { default = null }

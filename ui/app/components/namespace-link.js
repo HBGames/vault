@@ -13,15 +13,15 @@ export default Component.extend({
   showLastSegment: false,
 
   normalizedNamespace: computed('targetNamespace', function () {
-    const ns = this.targetNamespace;
+    let ns = this.targetNamespace;
     return (ns || '').replace(/\.+/g, '/').replace(/☃/g, '.');
   }),
 
   namespaceDisplay: computed('normalizedNamespace', 'showLastSegment', function () {
-    const ns = this.normalizedNamespace;
+    let ns = this.normalizedNamespace;
     if (!ns) return 'root';
-    const showLastSegment = this.showLastSegment;
-    const parts = ns?.split('/');
+    let showLastSegment = this.showLastSegment;
+    let parts = ns?.split('/');
     return showLastSegment ? parts[parts.length - 1] : ns;
   }),
 
@@ -30,7 +30,7 @@ export default Component.extend({
   }),
 
   get namespaceLink() {
-    const origin =
+    let origin =
       window.location.protocol +
       '//' +
       window.location.hostname +

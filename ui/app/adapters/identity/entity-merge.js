@@ -3,7 +3,7 @@ import IdentityAdapter from './base';
 export default IdentityAdapter.extend({
   buildURL() {
     // first arg is modelName which we're hardcoding in the call to _super.
-    const [, ...args] = arguments;
+    let [, ...args] = arguments;
     return this._super('identity/entity/merge', ...args);
   },
 

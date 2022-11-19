@@ -19,7 +19,7 @@ export const COMPUTEDS = {
 
   // For rendering on the create/edit pages
   defaultFields: computed('newFields', 'operationFields', 'tlsFields', function () {
-    const excludeFields = ['role'].concat(this.operationFields, this.tlsFields);
+    let excludeFields = ['role'].concat(this.operationFields, this.tlsFields);
     return this.newFields.slice().removeObjects(excludeFields);
   }),
 
@@ -42,12 +42,12 @@ const ModelExport = Model.extend(COMPUTEDS, {
     if (this.defaultFields.length) {
       groups.unshift({ default: this.defaultFields });
     }
-    const ret = fieldToAttrs(this, groups);
+    let ret = fieldToAttrs(this, groups);
     return ret;
   }),
 
   operationFormFields: computed('operationFieldsWithoutSpecial', function () {
-    const objects = [
+    let objects = [
       'operationCreate',
       'operationActivate',
       'operationGet',
@@ -57,11 +57,9 @@ const ModelExport = Model.extend(COMPUTEDS, {
       'operationDestroy',
     ];
 
-    const attributes = ['operationAddAttribute', 'operationGetAttributes'];
-    const server = ['operationDiscoverVersion'];
-    const others = this.operationFieldsWithoutSpecial
-      .slice()
-      .removeObjects(objects.concat(attributes, server));
+    let attributes = ['operationAddAttribute', 'operationGetAttributes'];
+    let server = ['operationDiscoverVersion'];
+    let others = this.operationFieldsWithoutSpecial.slice().removeObjects(objects.concat(attributes, server));
     const groups = [
       { 'Managed Cryptographic Objects': objects },
       { 'Object Attributes': attributes },

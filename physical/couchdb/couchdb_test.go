@@ -86,8 +86,7 @@ func prepareCouchdbDBTestContainer(t *testing.T) (func(), *couchDB) {
 	}
 
 	runner, err := docker.NewServiceRunner(docker.RunOptions{
-		ContainerName:   "couchdb",
-		ImageRepo:       "docker.mirror.hashicorp.services/library/couchdb",
+		ImageRepo:       "couchdb",
 		ImageTag:        "1.6",
 		Ports:           []string{"5984/tcp"},
 		DoNotAutoRemove: true,

@@ -760,9 +760,7 @@ func (c *Core) raftSnapshotRestoreCallback(grabLock bool, sealNode bool) func(co
 
 		if grabLock {
 			// Grab statelock
-			l := newLockGrabber(c.stateLock.Lock, c.stateLock.Unlock, c.standbyStopCh.Load().(chan struct{}))
-			go l.grab()
-			if stopped := l.lockOrStop(); stopped {
+			if stopped := grabLockOrStop(c.stateLock.Lock, c.stateLock.Unlock, c.standbyStopCh.Load().(chan struct{})); stopped {
 				c.logger.Error("did not apply snapshot; vault is shutting down")
 				return errors.New("did not apply snapshot; vault is shutting down")
 			}
@@ -853,7 +851,7 @@ func (c *Core) InitiateRetryJoin(ctx context.Context) error {
 
 	c.logger.Info("raft retry join initiated")
 
-	if _, err = c.JoinRaftCluster(ctx, leaderInfos, raftBackend.NonVoter()); err != nil {
+	if _, err = c.JoinRaftCluster(ctx, leaderInfos, false); err != nil {
 		return err
 	}
 

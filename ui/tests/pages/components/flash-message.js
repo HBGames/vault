@@ -21,7 +21,7 @@ export default {
     return this.latestItem.click();
   },
   async clickAll() {
-    for (const message of this.messages) {
+    for (let message of this.messages) {
       message.click();
     }
     await settled();

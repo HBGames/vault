@@ -143,11 +143,7 @@ func (b *backend) pathLogin(ctx context.Context, req *logical.Request, d *framew
 func (b *backend) pathLoginRenew(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 	username := req.Auth.Metadata["username"]
 	password := req.Auth.InternalData["password"].(string)
-
-	var nonce string
-	if d != nil {
-		nonce = d.Get("nonce").(string)
-	}
+	nonce := d.Get("nonce").(string)
 
 	cfg, err := b.getConfig(ctx, req)
 	if err != nil {

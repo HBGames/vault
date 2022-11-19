@@ -12,7 +12,7 @@ export default Mixin.create({
   onDisable() {},
   onPromote() {},
   submitHandler: task(function* (action, clusterMode, data, event) {
-    const replicationMode = (data && data.replicationMode) || this.replicationMode;
+    let replicationMode = (data && data.replicationMode) || this.replicationMode;
     if (event && event.preventDefault) {
       event.preventDefault();
     }
@@ -74,7 +74,7 @@ export default Mixin.create({
       // do something to show model is pending
       cluster.set(
         replicationMode,
-        store.createRecord('replication-attributes', {
+        store.createFragment('replication-attributes', {
           mode: 'bootstrapping',
         })
       );

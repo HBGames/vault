@@ -62,7 +62,7 @@ rules:
     severity: ERROR
 
 # NamespaceByID 
-  - id: nil-check-physical-storage-by-nsid
+  - id: nil-check-physical-storage
     patterns:
       - pattern-either:
           - pattern: |

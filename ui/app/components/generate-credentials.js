@@ -66,9 +66,7 @@ export default Component.extend({
   },
 
   willDestroy() {
-    if (!this.model.isDestroyed && !this.model.isDestroying) {
-      this.model.unloadRecord();
-    }
+    this.model.unloadRecord();
     this._super(...arguments);
   },
 
@@ -96,7 +94,7 @@ export default Component.extend({
 
   actions: {
     create() {
-      const model = this.model;
+      let model = this.model;
       this.set('loading', true);
       this.model
         .save()

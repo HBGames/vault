@@ -8,7 +8,6 @@ import UnloadModelRoute from 'vault/mixins/unload-model-route';
 export default Route.extend(UnloadModelRoute, {
   modelPath: 'model.model',
   pathHelp: service('path-help'),
-  store: service(),
 
   modelType(backendType, section) {
     const MODELS = {

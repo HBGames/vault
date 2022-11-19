@@ -18,7 +18,7 @@ export const validationHandler = (schema, req) => {
       return new Response(404, {}, { errors: ['MFA Request ID not found'] });
     }
     // validate request body
-    for (const constraintId in mfa_payload) {
+    for (let constraintId in mfa_payload) {
       // ensure ids were passed in map
       const method = mfaRequest.methods.find(({ id }) => id === constraintId);
       if (!method) {
@@ -38,7 +38,7 @@ export const validationHandler = (schema, req) => {
               limit:
                 'maximum TOTP validation attempts 4 exceeded the allowed attempts 3. Please try again in 15 seconds',
             }[passcode] || 'failed to validate';
-          console.log(error); // eslint-disable-line
+          console.log(error);
           return new Response(403, {}, { errors: [error] });
         }
       } else if (passcode) {
@@ -48,7 +48,7 @@ export const validationHandler = (schema, req) => {
     }
     return authResponses[mfa_request_id];
   } catch (error) {
-    console.log(error); // eslint-disable-line
+    console.log(error);
     return new Response(500, {}, { errors: ['Mirage Handler Error: /sys/mfa/validate'] });
   }
 };

@@ -5,7 +5,6 @@ import { task } from 'ember-concurrency';
 import { waitFor } from '@ember/test-waiters';
 
 export default class OidcKeyDetailsController extends Controller {
-  @service store;
   @service router;
   @service flashMessages;
 

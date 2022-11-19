@@ -34,6 +34,4 @@ const (
 	ReplicationResolverALPN = "replication_resolver_v1"
 
 	VaultEnableFilePermissionsCheckEnv = "VAULT_ENABLE_FILE_PERMISSIONS_CHECK"
-
-	VaultDisableUserLockout = "VAULT_DISABLE_USER_LOCKOUT"
 )

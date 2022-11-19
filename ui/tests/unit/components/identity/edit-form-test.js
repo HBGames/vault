@@ -6,7 +6,7 @@ import sinon from 'sinon';
 module('Unit | Component | identity/edit-form', function (hooks) {
   setupTest(hooks);
 
-  const testCases = [
+  let testCases = [
     {
       identityType: 'entity',
       mode: 'create',
@@ -54,16 +54,16 @@ module('Unit | Component | identity/edit-form', function (hooks) {
     },
   ];
   testCases.forEach(function (testCase) {
-    const model = EmberObject.create({
+    let model = EmberObject.create({
       identityType: testCase.identityType,
       rollbackAttributes: sinon.spy(),
     });
     test(`it computes cancelLink properly: ${testCase.identityType} ${testCase.mode}`, function (assert) {
-      const component = this.owner.lookup('component:identity/edit-form');
+      let component = this.owner.lookup('component:identity/edit-form');
 
       component.set('mode', testCase.mode);
       component.set('model', model);
-      assert.strictEqual(component.get('cancelLink'), testCase.expected, 'cancel link is correct');
+      assert.equal(component.get('cancelLink'), testCase.expected, 'cancel link is correct');
     });
   });
 });

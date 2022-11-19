@@ -52,7 +52,7 @@ export default Component.extend({
     ];
   }),
   handleChange() {
-    const { time, unit, seconds } = this;
+    let { time, unit, seconds } = this;
     const ttl = {
       seconds,
       timeString: time + unit,
@@ -68,7 +68,8 @@ export default Component.extend({
   },
   updateTime: task(function* (newTime) {
     this.set('errorMessage', '');
-    const parsedTime = parseInt(newTime, 10);
+    let parsedTime;
+    parsedTime = parseInt(newTime, 10);
     if (!newTime) {
       this.set('errorMessage', 'This field is required');
       return;

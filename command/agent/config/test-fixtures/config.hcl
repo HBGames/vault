@@ -1,5 +1,4 @@
 pid_file = "./pidfile"
-log_file = "/var/log/vault/vault-agent.log"
 
 auto_auth {
 	method {

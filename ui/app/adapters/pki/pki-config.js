@@ -23,7 +23,7 @@ export default ApplicationAdapter.extend({
       return;
     }
     const data = snapshot.adapterOptions.fields.reduce((data, field) => {
-      const attr = snapshot.attr(field);
+      let attr = snapshot.attr(field);
       if (attr) {
         serializer.serializeAttribute(snapshot, data, field, attr);
       } else {
@@ -32,7 +32,7 @@ export default ApplicationAdapter.extend({
       return data;
     }, {});
     return this.ajax(url, 'POST', { data }).then((resp) => {
-      const response = resp || {};
+      let response = resp || {};
       response.id = `${snapshot.record.get('backend')}-${snapshot.adapterOptions.method}`;
       return response;
     });

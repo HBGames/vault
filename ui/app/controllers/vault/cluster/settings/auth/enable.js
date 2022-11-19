@@ -6,7 +6,7 @@ export default Controller.extend({
   actions: {
     onMountSuccess: function (type, path) {
       this.wizard.transitionFeatureMachine(this.wizard.featureState, 'CONTINUE', type);
-      const transition = this.transitionToRoute('vault.cluster.settings.auth.configure', path);
+      let transition = this.transitionToRoute('vault.cluster.settings.auth.configure', path);
       return transition.followRedirects();
     },
   },

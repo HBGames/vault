@@ -15,18 +15,18 @@ export default Route.extend({
       window.scrollTo(0, 0);
     },
     error(error, transition) {
-      const controlGroup = this.controlGroup;
+      let controlGroup = this.controlGroup;
       if (error instanceof ControlGroupError) {
-        return controlGroup.handleError(error);
+        return controlGroup.handleError(error, transition);
       }
       if (error.path === '/v1/sys/wrapping/unwrap') {
         controlGroup.unmarkTokenForUnwrap();
       }
 
-      const router = this.routing;
+      let router = this.routing;
       //FIXME transition.intent likely needs to be replaced
       let errorURL = transition.intent.url;
-      const { name, contexts, queryParams } = transition.intent;
+      let { name, contexts, queryParams } = transition.intent;
 
       // If the transition is internal to Ember, we need to generate the URL
       // from the route parameters ourselves
@@ -61,21 +61,21 @@ export default Route.extend({
       return true;
     },
     didTransition() {
-      const wizard = this.wizard;
+      let wizard = this.wizard;
 
       if (wizard.get('currentState') !== 'active.feature') {
         return true;
       }
       next(() => {
-        const applicationURL = this.routing.currentURL;
-        const activeRoute = this.routing.currentRouteName;
+        let applicationURL = this.routing.currentURL;
+        let activeRoute = this.routing.currentRouteName;
 
         if (this.wizard.setURLAfterTransition) {
           this.set('wizard.setURLAfterTransition', false);
           this.set('wizard.expectedURL', applicationURL);
           this.set('wizard.expectedRouteName', activeRoute);
         }
-        const expectedRouteName = this.wizard.expectedRouteName;
+        let expectedRouteName = this.wizard.expectedRouteName;
         if (this.routing.isActive(expectedRouteName) === false) {
           wizard.transitionTutorialMachine(wizard.get('currentState'), 'PAUSE');
         }

@@ -66,9 +66,9 @@ export default Component.extend(DEFAULTS, {
   hasProgress: gt('progress', 0),
 
   actionSuccess(resp) {
-    const { onUpdate, isComplete, onShamirSuccess, thresholdPath } = this;
-    const threshold = get(resp, thresholdPath);
-    const props = {
+    let { onUpdate, isComplete, onShamirSuccess, thresholdPath } = this;
+    let threshold = get(resp, thresholdPath);
+    let props = {
       ...resp,
       threshold,
     };
@@ -100,7 +100,7 @@ export default Component.extend(DEFAULTS, {
   },
 
   generateStep: computed('generateWithPGP', 'haveSavedPGPKey', 'pgp_key', function () {
-    const { generateWithPGP, pgp_key, haveSavedPGPKey } = this;
+    let { generateWithPGP, pgp_key, haveSavedPGPKey } = this;
     if (!generateWithPGP && !pgp_key) {
       return 'chooseMethod';
     }

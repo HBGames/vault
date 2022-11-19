@@ -34,17 +34,18 @@ export default class SecretEdit extends Component {
   @tracked isV2 = false;
   @tracked codemirrorString = null;
 
-  // fired on did-insert from render modifier
-  @action
-  createKvData(elem, [model]) {
-    if (!model.secretData && model.selectedVersion) {
+  constructor() {
+    super(...arguments);
+    let secrets = this.args.model.secretData;
+    if (!secrets && this.args.model.selectedVersion) {
       this.isV2 = true;
-      model.secretData = model.belongsTo('selectedVersion').value().secretData;
+      secrets = this.args.model.belongsTo('selectedVersion').value().secretData;
     }
-    this.secretData = KVObject.create({ content: [] }).fromJSON(model.secretData);
-    this.codemirrorString = this.secretData.toJSONString();
+    const data = KVObject.create({ content: [] }).fromJSON(secrets);
+    this.secretData = data;
+    this.codemirrorString = data.toJSONString();
     if (this.wizard.featureState === 'details' && this.args.mode === 'create') {
-      const engine = model.backend.includes('kv') ? 'kv' : model.backend;
+      let engine = this.args.model.backend.includes('kv') ? 'kv' : this.args.model.backend;
       this.wizard.transitionFeatureMachine('details', 'CONTINUE', engine);
     }
   }
@@ -55,9 +56,9 @@ export default class SecretEdit extends Component {
       if (!context.args.model || context.args.mode === 'create') {
         return;
       }
-      const backend = context.isV2 ? context.args.model.engine.id : context.args.model.backend;
-      const id = context.args.model.id;
-      const path = context.isV2 ? `${backend}/data/${id}` : `${backend}/${id}`;
+      let backend = context.isV2 ? context.args.model.engine.id : context.args.model.backend;
+      let id = context.args.model.id;
+      let path = context.isV2 ? `${backend}/data/${id}` : `${backend}/${id}`;
       return {
         id: path,
       };
@@ -98,7 +99,7 @@ export default class SecretEdit extends Component {
   @or('requestInFlight', 'model.isFolder', 'model.flagsIsInvalid') buttonDisabled;
 
   get modelForData() {
-    const { model } = this.args;
+    let { model } = this.args;
     if (!model) return null;
     return this.isV2 ? model.belongsTo('selectedVersion').value() : model;
   }

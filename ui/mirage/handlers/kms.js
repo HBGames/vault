@@ -8,7 +8,7 @@ export default function (server) {
   });
 
   server.get('keymgmt/key/:name', function (_, request) {
-    const name = request.params.name;
+    let name = request.params.name;
     return {
       data: {
         name,

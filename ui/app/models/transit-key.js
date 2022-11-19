@@ -114,7 +114,7 @@ export default Model.extend({
 
   keyVersions: computed('validKeyVersions', function () {
     let maxVersion = Math.max(...this.validKeyVersions);
-    const versions = [];
+    let versions = [];
     while (maxVersion > 0) {
       versions.unshift(maxVersion);
       maxVersion--;
@@ -140,8 +140,8 @@ export default Model.extend({
 
   keysForEncryption: computed('minEncryptionVersion', 'latestVersion', function () {
     let { minEncryptionVersion, latestVersion } = this;
-    const minVersion = clamp(minEncryptionVersion - 1, 0, latestVersion);
-    const versions = [];
+    let minVersion = clamp(minEncryptionVersion - 1, 0, latestVersion);
+    let versions = [];
     while (latestVersion > minVersion) {
       versions.push(latestVersion);
       latestVersion--;
@@ -154,7 +154,7 @@ export default Model.extend({
   }),
 
   exportKeyTypes: computed('exportable', 'supportsEncryption', 'supportsSigning', 'type', function () {
-    const types = ['hmac'];
+    let types = ['hmac'];
     if (this.supportsSigning) {
       types.unshift('signing');
     }

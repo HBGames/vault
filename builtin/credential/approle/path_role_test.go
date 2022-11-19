@@ -381,7 +381,7 @@ func TestAppRole_RoleNameLowerCasing(t *testing.T) {
 			"secret_id": secretID,
 		},
 	})
-	if err != nil && err != logical.ErrInvalidCredentials {
+	if err != nil {
 		t.Fatal(err)
 	}
 	if resp == nil || !resp.IsError() {

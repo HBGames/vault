@@ -8,7 +8,7 @@ export default Route.extend({
     this.store.unloadAll('kmip/scope');
   },
   model() {
-    const model = this.store.createRecord('kmip/scope', {
+    let model = this.store.createRecord('kmip/scope', {
       backend: this.secretMountPath.currentPath,
     });
     return model;

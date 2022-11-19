@@ -27,14 +27,14 @@ export default Component.extend({
   },
 
   adapter() {
-    const type = this.type;
-    const store = this.store;
+    let type = this.type;
+    let store = this.store;
     return store.adapterFor(`identity/${type}`);
   },
 
   data() {
-    const { param, paramValue, aliasMountAccessor } = this;
-    const data = {};
+    let { param, paramValue, aliasMountAccessor } = this;
+    let data = {};
 
     data[underscore([param])] = paramValue;
     if (param === 'alias name') {
@@ -44,10 +44,10 @@ export default Component.extend({
   },
 
   lookup: task(function* () {
-    const flash = this.flashMessages;
-    const type = this.type;
-    const store = this.store;
-    const { param, paramValue } = this;
+    let flash = this.flashMessages;
+    let type = this.type;
+    let store = this.store;
+    let { param, paramValue } = this;
     let response;
     try {
       response = yield this.adapter().lookup(store, this.data());

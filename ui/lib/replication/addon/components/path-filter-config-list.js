@@ -25,15 +25,15 @@ export default Component.extend({
   },
 
   fetchMountsForNamespace: task(function* (ns) {
-    const adapter = this.store.adapterFor('application');
-    const secret = [];
-    const auth = [];
-    const mounts = ns
+    let adapter = this.store.adapterFor('application');
+    let secret = [];
+    let auth = [];
+    let mounts = ns
       ? yield adapter.ajax('/v1/sys/internal/ui/mounts', 'GET', { namespace: ns })
       : yield adapter.ajax('/v1/sys/internal/ui/mounts', 'GET');
 
     ['secret', 'auth'].forEach((key) => {
-      for (const [id, info] of Object.entries(mounts.data[key])) {
+      for (let [id, info] of Object.entries(mounts.data[key])) {
         let longId;
         if (key === 'auth') {
           longId = ns ? `${ns}/auth/${id}` : `auth/${id}`;
@@ -59,10 +59,10 @@ export default Component.extend({
   }),
 
   filterOptions(list, term) {
-    const paths = this.config.paths;
+    let paths = this.config.paths;
     return list
       .map(({ groupName, options }) => {
-        const trimmedOptions = options.filter((op) => {
+        let trimmedOptions = options.filter((op) => {
           if (term) {
             return op.searchText.includes(term) && !paths.includes(op.id);
           }
@@ -74,23 +74,23 @@ export default Component.extend({
   },
 
   setAutoCompleteOptions: task(function* (term) {
-    const { namespaces, lastOptions } = this;
-    const namespaceToFetch = namespaces.find((ns) => ns === term);
+    let { namespaces, lastOptions } = this;
+    let namespaceToFetch = namespaces.find((ns) => ns === term);
     let secretList = [];
     let authList = [];
-    const options = [];
+    let options = [];
     if (term) {
       yield timeout(200);
     }
     if (!term || (term && namespaceToFetch)) {
       // fetch auth and secret methods from sys/internal/ui/mounts for the given namespace
-      const result = yield this.fetchMountsForNamespace.perform(namespaceToFetch);
+      let result = yield this.fetchMountsForNamespace.perform(namespaceToFetch);
       secretList = result.secret;
       authList = result.auth;
     }
     var currentSecrets = lastOptions && lastOptions.findBy('groupName', 'Secret Engines');
     var currentAuths = lastOptions && lastOptions.findBy('groupName', 'Auth Methods');
-    const formattedNamespaces = namespaces.map((val) => {
+    let formattedNamespaces = namespaces.map((val) => {
       return {
         id: val,
         name: val,
@@ -99,13 +99,13 @@ export default Component.extend({
     });
 
     options.push({ groupName: 'Namespaces', options: formattedNamespaces });
-    const secretOptions = currentSecrets ? [...currentSecrets.options, ...secretList] : secretList;
+    let secretOptions = currentSecrets ? [...currentSecrets.options, ...secretList] : secretList;
 
     options.push({ groupName: 'Secret Engines', options: secretOptions.uniqBy('id') });
-    const authOptions = currentAuths ? [...currentAuths.options, ...authList] : authList;
+    let authOptions = currentAuths ? [...currentAuths.options, ...authList] : authList;
 
     options.push({ groupName: 'Auth Methods', options: authOptions.uniqBy('id') });
-    const filtered = term ? this.filterOptions(options, term) : this.filterOptions(options);
+    let filtered = term ? this.filterOptions(options, term) : this.filterOptions(options);
     if (!term) {
       this.set('autoCompleteOptions', filtered);
     }
@@ -123,20 +123,12 @@ export default Component.extend({
   },
 
   actions: {
-    async pathsChanged(paths) {
+    pathsChanged(paths) {
       // set paths on the model
       set(this.config, 'paths', paths);
-
-      // if dropdown is empty or has options without groupName, re-fetch
-      if (
-        this.autoCompleteOptions.length === 0 ||
-        this.autoCompleteOptions.any((option) => !Object.keys(option).includes('groupName'))
-      ) {
-        await this.setAutoCompleteOptions.perform();
-      }
       if (paths.length) {
         // remove the selected item from the default list of options
-        const filtered = this.filterOptions(this.autoCompleteOptions);
+        let filtered = this.filterOptions(this.autoCompleteOptions);
         this.set('autoCompleteOptions', filtered);
       } else {
         // if there's no paths, we need to re-fetch like on init

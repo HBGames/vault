@@ -3,7 +3,6 @@
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const config = require('./config/environment')();
-const nodeSass = require('node-sass');
 
 const environment = EmberApp.env();
 const isProd = environment === 'production';
@@ -39,7 +38,6 @@ const appConfig = {
     enabled: !isProd,
   },
   sassOptions: {
-    implementation: nodeSass,
     sourceMap: false,
     onlyIncluded: true,
   },
@@ -63,7 +61,7 @@ const appConfig = {
 };
 
 module.exports = function (defaults) {
-  const app = new EmberApp(defaults, appConfig);
+  let app = new EmberApp(defaults, appConfig);
 
   app.import('vendor/string-includes.js');
   app.import('node_modules/string.prototype.endswith/endswith.js');

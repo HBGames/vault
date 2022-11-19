@@ -17,17 +17,16 @@
         <Chevron @direction="down" @isButton={{true}} />
       </D.Trigger>
       <D.Content @defaultClass="popup-menu-content">
-        <nav class="box menu" aria-label="snapshots actions">
+        <nav class="box menu">
           <ul class="menu-list">
             <li class="action">
               {{#if this.useServiceWorker}}
-                <ExternalLink
-                  @href="/v1/sys/storage/raft/snapshot"
-                  @sameTab={{true}}
+                <a
+                  href="/v1/sys/storage/raft/snapshot"
                   onclick={{queue (action "downloadViaServiceWorker") (action D.actions.close)}}
                 >
                   Download
-                </ExternalLink>
+                </a>
               {{else}}
                 <button
                   type="button"
@@ -79,7 +78,7 @@
         <td class="middle no-padding has-text-right">
           <PopupMenu>
             <Confirm as |c|>
-              <nav aria-label="remove peer">
+              <nav>
                 <ul>
                   <li class="action">
                     <c.Message

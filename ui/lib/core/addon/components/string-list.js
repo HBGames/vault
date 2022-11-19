@@ -3,7 +3,6 @@ import Component from '@glimmer/component';
 import autosize from 'autosize';
 import { action } from '@ember/object';
 import { set } from '@ember/object';
-import { next } from '@ember/runloop';
 
 /**
  * @module StringList
@@ -19,8 +18,6 @@ import { next } from '@ember/runloop';
  * @param {string} helpText - Text displayed as a tooltip.
  * @param {string} type=array - Optional type for inputValue.
  * @param {string} attrName - We use this to check the type so we can modify the tooltip content.
- * @param {string} subText - Text below the label.
- * @param {boolean} hideFormSection - If true do not add form-section class on surrounding div.
  */
 
 export default class StringList extends Component {
@@ -40,10 +37,8 @@ export default class StringList extends Component {
     });
     this.type = this.args.type || 'array';
     this.setType();
-    next(() => {
-      this.toList();
-      this.addInput();
-    });
+    this.toList();
+    this.addInput();
   }
 
   setType() {
@@ -65,7 +60,7 @@ export default class StringList extends Component {
 
   toVal() {
     const inputs = this.inputList.filter((x) => x.value).mapBy('value');
-    if (this.args.type === 'string') {
+    if (this.format === 'string') {
       return inputs.join(',');
     }
     return inputs;

@@ -58,7 +58,7 @@ export default class ConfigComponent extends Component {
 
   @action
   updateBooleanValue(attr, value) {
-    const valueToSet = value === true ? attr.options.trueValue : attr.options.falseValue;
+    let valueToSet = value === true ? attr.options.trueValue : attr.options.falseValue;
     this.args.model[attr.name] = valueToSet;
   }
 

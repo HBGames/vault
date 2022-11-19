@@ -13,6 +13,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+
 	"github.com/hashicorp/vault/helper/testhelpers/certhelpers"
 	"github.com/hashicorp/vault/helper/testhelpers/mongodb"
 	dbplugin "github.com/hashicorp/vault/sdk/database/dbplugin/v5"
@@ -26,7 +27,7 @@ import (
 const mongoAdminRole = `{ "db": "admin", "roles": [ { "role": "readWrite" } ] }`
 
 func TestMongoDB_Initialize(t *testing.T) {
-	cleanup, connURL := mongodb.PrepareTestContainer(t, "latest")
+	cleanup, connURL := mongodb.PrepareTestContainer(t, "5.0.10")
 	defer cleanup()
 
 	db := new()
@@ -119,7 +120,7 @@ func TestNewUser_usernameTemplate(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			cleanup, connURL := mongodb.PrepareTestContainer(t, "latest")
+			cleanup, connURL := mongodb.PrepareTestContainer(t, "5.0.10")
 			defer cleanup()
 
 			db := new()
@@ -145,7 +146,7 @@ func TestNewUser_usernameTemplate(t *testing.T) {
 }
 
 func TestMongoDB_CreateUser(t *testing.T) {
-	cleanup, connURL := mongodb.PrepareTestContainer(t, "latest")
+	cleanup, connURL := mongodb.PrepareTestContainer(t, "5.0.10")
 	defer cleanup()
 
 	db := new()
@@ -177,7 +178,7 @@ func TestMongoDB_CreateUser(t *testing.T) {
 }
 
 func TestMongoDB_CreateUser_writeConcern(t *testing.T) {
-	cleanup, connURL := mongodb.PrepareTestContainer(t, "latest")
+	cleanup, connURL := mongodb.PrepareTestContainer(t, "5.0.10")
 	defer cleanup()
 
 	initReq := dbplugin.InitializeRequest{
@@ -211,7 +212,7 @@ func TestMongoDB_CreateUser_writeConcern(t *testing.T) {
 }
 
 func TestMongoDB_DeleteUser(t *testing.T) {
-	cleanup, connURL := mongodb.PrepareTestContainer(t, "latest")
+	cleanup, connURL := mongodb.PrepareTestContainer(t, "5.0.10")
 	defer cleanup()
 
 	db := new()
@@ -251,7 +252,7 @@ func TestMongoDB_DeleteUser(t *testing.T) {
 }
 
 func TestMongoDB_UpdateUser_Password(t *testing.T) {
-	cleanup, connURL := mongodb.PrepareTestContainer(t, "latest")
+	cleanup, connURL := mongodb.PrepareTestContainer(t, "5.0.10")
 	defer cleanup()
 
 	// The docker test method PrepareTestContainer defaults to a database "test"

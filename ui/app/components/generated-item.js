@@ -64,7 +64,7 @@ export default Component.extend({
       this.model.fieldGroups.forEach((element) => {
         if (element.default) {
           element.default.forEach((attr) => {
-            const fieldValue = attr.options && attr.options.fieldValue;
+            let fieldValue = attr.options && attr.options.fieldValue;
             if (fieldValue) {
               this.model[attr.name] = this.model[fieldValue];
             }

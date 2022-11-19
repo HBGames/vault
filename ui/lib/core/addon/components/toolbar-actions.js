@@ -7,7 +7,7 @@
  * ```js
  * <Toolbar>
  *   <ToolbarActions>
- *     <ToolbarLink @route="vault.cluster.policy.edit">
+ *     <ToolbarLink @params={{array 'vault.cluster.policy.edit'}}>
  *       Edit policy
  *     </ToolbarLink>
  *   </ToolbarActions>

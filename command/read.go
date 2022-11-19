@@ -59,7 +59,7 @@ func (c *ReadCommand) AutocompleteFlags() complete.Flags {
 func (c *ReadCommand) Run(args []string) int {
 	f := c.Flags()
 
-	if err := f.Parse(args, ParseOptionAllowRawFormat(true)); err != nil {
+	if err := f.Parse(args); err != nil {
 		c.UI.Error(err.Error())
 		return 1
 	}
@@ -91,40 +91,19 @@ func (c *ReadCommand) Run(args []string) int {
 		return 1
 	}
 
-	if Format(c.UI) != "raw" {
-		secret, err := client.Logical().ReadWithData(path, data)
-		if err != nil {
-			c.UI.Error(fmt.Sprintf("Error reading %s: %s", path, err))
-			return 2
-		}
-		if secret == nil {
-			c.UI.Error(fmt.Sprintf("No value found at %s", path))
-			return 2
-		}
-
-		if c.flagField != "" {
-			return PrintRawField(c.UI, secret, c.flagField)
-		}
-
-		return OutputSecret(c.UI, secret)
-	}
-
-	resp, err := client.Logical().ReadRawWithData(path, data)
+	secret, err := client.Logical().ReadWithData(path, data)
 	if err != nil {
-		c.UI.Error(fmt.Sprintf("Error reading: %s: %s", path, err))
+		c.UI.Error(fmt.Sprintf("Error reading %s: %s", path, err))
 		return 2
 	}
-	if resp == nil || resp.Body == nil {
+	if secret == nil {
 		c.UI.Error(fmt.Sprintf("No value found at %s", path))
 		return 2
 	}
-	defer resp.Body.Close()
 
-	contents, err := io.ReadAll(resp.Body)
-	if err != nil {
-		c.UI.Error(fmt.Sprintf("Error reading: %s: %s", path, err))
-		return 2
+	if c.flagField != "" {
+		return PrintRawField(c.UI, secret, c.flagField)
 	}
 
-	return OutputData(c.UI, contents)
+	return OutputSecret(c.UI, secret)
 }

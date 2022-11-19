@@ -13,11 +13,7 @@ module('Acceptance | policy/acl/:name/edit', function (hooks) {
 
   test('it redirects to list if navigating to root', async function (assert) {
     await page.visit({ type: 'acl', name: 'root' });
-    assert.strictEqual(
-      currentURL(),
-      '/vault/policies/acl',
-      'navigation to root show redirects you to policy list'
-    );
+    assert.equal(currentURL(), '/vault/policies/acl', 'navigation to root show redirects you to policy list');
   });
 
   test('it does not show delete for default policy', async function (assert) {
@@ -27,6 +23,6 @@ module('Acceptance | policy/acl/:name/edit', function (hooks) {
 
   test('it navigates to show when the toggle is clicked', async function (assert) {
     await page.visit({ type: 'acl', name: 'default' }).toggleEdit();
-    assert.strictEqual(currentURL(), '/vault/policy/acl/default', 'toggle navigates from edit to show');
+    assert.equal(currentURL(), '/vault/policy/acl/default', 'toggle navigates from edit to show');
   });
 });

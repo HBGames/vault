@@ -20,7 +20,7 @@ export default class KmipRoleRoute extends Route {
 
   setupController(controller) {
     super.setupController(...arguments);
-    const { scope_name: scope, role_name: role } = this.paramsFor('role');
+    let { scope_name: scope, role_name: role } = this.paramsFor('role');
     controller.setProperties({ role, scope });
   }
 }

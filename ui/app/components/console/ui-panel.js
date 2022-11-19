@@ -42,7 +42,7 @@ export default Component.extend({
 
   executeCommand: task(function* (command, shouldThrow = false) {
     this.set('inputValue', '');
-    const service = this.console;
+    let service = this.console;
     let serviceArgs;
 
     if (
@@ -69,19 +69,19 @@ export default Component.extend({
       return;
     }
 
-    const [method, flagArray, path, dataArray] = serviceArgs;
+    let [method, flagArray, path, dataArray] = serviceArgs;
 
     if (dataArray || flagArray) {
       var { data, flags } = extractDataAndFlags(method, dataArray, flagArray);
     }
 
-    const inputError = logErrorFromInput(path, method, flags, dataArray);
+    let inputError = logErrorFromInput(path, method, flags, dataArray);
     if (inputError) {
       this.logAndOutput(command, inputError);
       return;
     }
     try {
-      const resp = yield service[method].call(service, path, data, flags.wrapTTL);
+      let resp = yield service[method].call(service, path, data, flags.wrapTTL);
       this.logAndOutput(command, logFromResponse(resp, path, method, flags));
     } catch (error) {
       if (error instanceof ControlGroupError) {
@@ -92,8 +92,8 @@ export default Component.extend({
   }),
 
   refreshRoute: task(function* () {
-    const owner = getOwner(this);
-    const currentRoute = owner.lookup(`router:main`).get('currentRouteName');
+    let owner = getOwner(this);
+    let currentRoute = owner.lookup(`router:main`).get('currentRouteName');
 
     try {
       this.store.clearAllDatasets();
@@ -105,7 +105,7 @@ export default Component.extend({
   }),
 
   routeToExplore: task(function* (command) {
-    const filter = command.replace('api', '').trim();
+    let filter = command.replace('api', '').trim();
     let content =
       'Welcome to the Vault API explorer! \nYou can search for endpoints, see what parameters they accept, and even execute requests with your current token.';
     if (filter) {

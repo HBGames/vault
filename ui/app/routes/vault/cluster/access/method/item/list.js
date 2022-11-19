@@ -4,7 +4,6 @@ import { singularize } from 'ember-inflector';
 import ListRoute from 'vault/mixins/list-route';
 
 export default Route.extend(ListRoute, {
-  store: service(),
   wizard: service(),
   pathHelp: service('path-help'),
 
@@ -19,7 +18,7 @@ export default Route.extend(ListRoute, {
   model() {
     const { type, authMethodPath, itemType } = this.getMethodAndModelInfo();
     const { page, pageFilter } = this.paramsFor(this.routeName);
-    const modelType = `generated-${singularize(itemType)}-${type}`;
+    let modelType = `generated-${singularize(itemType)}-${type}`;
 
     return this.store
       .lazyPaginatedQuery(modelType, {
@@ -37,7 +36,6 @@ export default Route.extend(ListRoute, {
         }
       });
   },
-
   actions: {
     willTransition(transition) {
       window.scrollTo(0, 0);
@@ -51,7 +49,6 @@ export default Route.extend(ListRoute, {
       this.refresh();
     },
   },
-
   setupController(controller) {
     this._super(...arguments);
     const { apiPath, authMethodPath, itemType, methodModel } = this.getMethodAndModelInfo();

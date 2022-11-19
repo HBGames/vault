@@ -54,9 +54,9 @@ export default class InfoTableItemArray extends Component {
   }
 
   get displayArrayTruncated() {
-    const { displayArray } = this.args;
+    let { displayArray } = this.args;
     if (!displayArray) return null;
-    if (displayArray.length >= 10 && !this.args.doNotTruncate) {
+    if ((displayArray.length >= 10) & !this.args.doNotTruncate) {
       // if array greater than 10 in length only display the first 5
       return displayArray.slice(0, 5);
     }
@@ -65,9 +65,9 @@ export default class InfoTableItemArray extends Component {
 
   @action async fetchOptions() {
     if (this.args.isLink && this.args.modelType) {
-      const queryOptions = this.args.backend ? { backend: this.args.backend } : {};
+      let queryOptions = this.args.backend ? { backend: this.args.backend } : {};
 
-      const modelRecords = await this.store.query(this.args.modelType, queryOptions).catch((err) => {
+      let modelRecords = await this.store.query(this.args.modelType, queryOptions).catch((err) => {
         if (err.httpStatus === 404) {
           return [];
         } else {

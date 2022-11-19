@@ -17,7 +17,7 @@ function writeKeysFile(unsealKeys, rootToken, filePath) {
   if (filePath === undefined) {
     filePath = path.join(process.cwd(), 'tests/helpers/vault-keys.js');
   }
-  const keys = {};
+  let keys = {};
   keys.unsealKeys = unsealKeys;
   keys.rootToken = rootToken;
 
@@ -42,7 +42,7 @@ function run(command, args = [], shareStd = true) {
   if (shareStd) {
     return execa(command, args, { cleanup: true, stdin: 'inherit', stdout: 'inherit', stderr: 'inherit' });
   }
-  const p = execa(command, args, { cleanup: true });
+  let p = execa(command, args, { cleanup: true });
   p.stdout.pipe(process.stdout);
   p.stderr.pipe(process.stderr);
   return p;

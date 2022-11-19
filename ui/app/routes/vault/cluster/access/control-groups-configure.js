@@ -3,7 +3,6 @@ import Route from '@ember/routing/route';
 import UnloadModel from 'vault/mixins/unload-model-route';
 
 export default Route.extend(UnloadModel, {
-  store: service(),
   version: service(),
 
   beforeModel() {
@@ -13,7 +12,7 @@ export default Route.extend(UnloadModel, {
   },
 
   model() {
-    const type = 'control-group-config';
+    let type = 'control-group-config';
     return this.version.hasFeature('Control Groups')
       ? this.store.findRecord(type, 'config').catch((e) => {
           // if you haven't saved a config, the API 404s, so create one here to edit and return it

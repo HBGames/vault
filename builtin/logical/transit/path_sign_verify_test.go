@@ -154,7 +154,7 @@ func testTransit_SignVerify_ECDSA(t *testing.T, bits int) {
 		req.Path = "sign/foo" + postpath
 		resp, err := b.HandleRequest(context.Background(), req)
 		if err != nil && !errExpected {
-			t.Fatalf("request: %v\nerror: %v", req, err)
+			t.Fatal(err)
 		}
 		if resp == nil {
 			t.Fatal("expected non-nil response")
@@ -950,9 +950,6 @@ func testTransit_SignVerify_RSA_PSS(t *testing.T, bits int) {
 
 	for hashAlgorithm := range keysutil.HashTypeMap {
 		t.Log("Hash algorithm:", hashAlgorithm)
-		if hashAlgorithm == "none" {
-			continue
-		}
 
 		for marshalingName := range keysutil.MarshalingTypeMap {
 			t.Log("\t", "Marshaling type:", marshalingName)

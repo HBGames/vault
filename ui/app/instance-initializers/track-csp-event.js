@@ -1,5 +1,5 @@
 export function initialize(appInstance) {
-  const service = appInstance.lookup('service:csp-event');
+  let service = appInstance.lookup('service:csp-event');
   service.attach();
 }
 

@@ -19,7 +19,7 @@ import { setComponentTemplate } from '@ember/component';
 
 class MessageError extends Component {
   get displayErrors() {
-    const { errorMessage, errors, model } = this.args;
+    let { errorMessage, errors, model } = this.args;
     if (errorMessage) {
       return [errorMessage];
     }
@@ -29,7 +29,7 @@ class MessageError extends Component {
     }
 
     if (model?.isError) {
-      const adapterError = model?.adapterError;
+      let adapterError = model?.adapterError;
       if (!adapterError) {
         return null;
       }

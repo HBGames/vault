@@ -24,16 +24,16 @@ module('Integration | Component | clients/horizontal-bar-chart', function (hooks
     await render(hbs`
     <Clients::HorizontalBarChart
       @dataset={{this.totalClientAttribution}}
-      @chartLegend={{this.chartLegend}}
-      @totalCounts={{this.totalCounts}}
+      @chartLegend={{chartLegend}}
+      @totalCounts={{totalCounts}}
     />`);
 
     assert.dom('[data-test-horizontal-bar-chart]').exists();
     const dataBars = findAll('[data-test-horizontal-bar-chart] rect.data-bar');
     const actionBars = findAll('[data-test-horizontal-bar-chart] rect.action-bar');
 
-    assert.strictEqual(actionBars.length, dataArray.length, 'renders correct number of hover bars');
-    assert.strictEqual(dataBars.length, dataArray.length * 2, 'renders correct number of data bars');
+    assert.equal(actionBars.length, dataArray.length, 'renders correct number of hover bars');
+    assert.equal(dataBars.length, dataArray.length * 2, 'renders correct number of data bars');
 
     const textLabels = this.element.querySelectorAll('[data-test-horizontal-bar-chart] .tick text');
     const textTotals = this.element.querySelectorAll('[data-test-horizontal-bar-chart] text.total-value');
@@ -43,10 +43,10 @@ module('Integration | Component | clients/horizontal-bar-chart', function (hooks
     textTotals.forEach((label, index) => {
       assert.dom(label).hasText(`${dataArray[index].clients}`, 'total value renders correct number');
     });
-    for (const [i, bar] of actionBars.entries()) {
-      const percent = Math.round((dataArray[i].clients / totalObject.clients) * 100);
+    for (let [i, bar] of actionBars.entries()) {
+      let percent = Math.round((dataArray[i].clients / totalObject.clients) * 100);
       await triggerEvent(bar, 'mouseover');
-      const tooltip = document.querySelector('.ember-modal-dialog');
+      let tooltip = document.querySelector('.ember-modal-dialog');
       assert.dom(tooltip).includesText(`${percent}%`, 'tooltip renders correct percentage');
     }
   });
@@ -63,21 +63,21 @@ module('Integration | Component | clients/horizontal-bar-chart', function (hooks
     await render(hbs`
     <Clients::HorizontalBarChart
       @dataset={{this.totalClientAttribution}}
-      @chartLegend={{this.chartLegend}}
-      @totalCounts={{this.totalCounts}}
+      @chartLegend={{chartLegend}}
+      @totalCounts={{totalCounts}}
     />`);
 
     assert.dom('[data-test-horizontal-bar-chart]').exists();
     const dataBars = findAll('[data-test-horizontal-bar-chart] rect.data-bar');
     const actionBars = findAll('[data-test-horizontal-bar-chart] rect.action-bar');
 
-    assert.strictEqual(actionBars.length, dataArray.length, 'renders correct number of hover bars');
-    assert.strictEqual(dataBars.length, dataArray.length * 2, 'renders correct number of data bars');
+    assert.equal(actionBars.length, dataArray.length, 'renders correct number of hover bars');
+    assert.equal(dataBars.length, dataArray.length * 2, 'renders correct number of data bars');
 
-    for (const [i, bar] of actionBars.entries()) {
-      const percent = Math.round((dataArray[i].clients / totalObject.clients) * 100);
+    for (let [i, bar] of actionBars.entries()) {
+      let percent = Math.round((dataArray[i].clients / totalObject.clients) * 100);
       await triggerEvent(bar, 'mouseover');
-      const tooltip = document.querySelector('.ember-modal-dialog');
+      let tooltip = document.querySelector('.ember-modal-dialog');
       assert.dom(tooltip).includesText(`${percent}%`, 'tooltip renders correct percentage');
     }
   });

@@ -4,7 +4,6 @@ import PromiseProxyMixin from '@ember/object/promise-proxy-mixin';
 import { methods } from 'vault/helpers/mountable-auth-methods';
 import { withModelValidations } from 'vault/decorators/model-validations';
 import { isPresent } from '@ember/utils';
-import { inject as service } from '@ember/service';
 
 const validations = {
   name: [{ type: 'presence', message: 'Name is required' }],
@@ -27,10 +26,8 @@ const validations = {
     },
   ],
 };
-
 @withModelValidations(validations)
 export default class MfaLoginEnforcementModel extends Model {
-  @service store;
   @attr('string') name;
   @hasMany('mfa-method') mfa_methods;
   @attr('string') namespace_id;

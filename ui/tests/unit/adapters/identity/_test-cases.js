@@ -23,13 +23,13 @@ export default function (modelName) {
     },
     {
       adapterMethod: 'updateRecord',
-      args: [storeMVP, { modelName }, { id: 'foo', modelName }],
+      args: [storeMVP, { modelName }, { id: 'foo' }],
       url: `/v1/${modelName}/id/foo`,
       method: 'PUT',
     },
     {
       adapterMethod: 'deleteRecord',
-      args: [storeMVP, { modelName }, { id: 'foo', modelName }],
+      args: [storeMVP, { modelName }, { id: 'foo' }],
       url: `/v1/${modelName}/id/foo`,
       method: 'DELETE',
     },

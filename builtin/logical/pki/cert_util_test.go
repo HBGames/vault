@@ -13,7 +13,7 @@ import (
 
 func TestPki_FetchCertBySerial(t *testing.T) {
 	t.Parallel()
-	b, storage := CreateBackendWithStorage(t)
+	b, storage := createBackendWithStorage(t)
 
 	cases := map[string]struct {
 		Req    *logical.Request

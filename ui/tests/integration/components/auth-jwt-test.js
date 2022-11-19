@@ -34,26 +34,26 @@ const OIDC_AUTH_RESPONSE = {
 };
 
 const renderIt = async (context, path = 'jwt') => {
-  const handler = (data, e) => {
+  let handler = (data, e) => {
     if (e && e.preventDefault) e.preventDefault();
     return resolve();
   };
-  const fake = fakeWindow.create();
+  let fake = fakeWindow.create();
   context.set('window', fake);
   context.set('handler', sinon.spy(handler));
   context.set('roleName', '');
   context.set('selectedAuthPath', path);
   await render(hbs`
     <AuthJwt
-      @window={{this.window}}
-      @roleName={{this.roleName}}
-      @selectedAuthPath={{this.selectedAuthPath}}
-      @onError={{action (mut this.error)}}
-      @onLoading={{action (mut this.isLoading)}}
-      @onNamespace={{action (mut this.namespace)}}
-      @onSelectedAuth={{action (mut this.selectedAuth)}}
-      @onSubmit={{action this.handler}}
-      @onRoleName={{action (mut this.roleName)}}
+      @window={{window}}
+      @roleName={{roleName}}
+      @selectedAuthPath={{selectedAuthPath}}
+      @onError={{action (mut error)}}
+      @onLoading={{action (mut isLoading)}}
+      @onNamespace={{action (mut namespace)}}
+      @onSelectedAuth={{action (mut selectedAuth)}}
+      @onSubmit={{action handler}}
+      @onRoleName={{action (mut roleName)}}
     />
     `);
 };
@@ -95,8 +95,8 @@ module('Integration | Component | auth jwt', function (hooks) {
   });
 
   test('it renders the yield', async function (assert) {
-    await render(hbs`<AuthJwt @onSubmit={{action (mut this.submit)}}>Hello!</AuthJwt>`);
-    assert.strictEqual(component.yieldContent, 'Hello!', 'yields properly');
+    await render(hbs`<AuthJwt @onSubmit={{action (mut submit)}}>Hello!</AuthJwt>`);
+    assert.equal(component.yieldContent, 'Hello!', 'yields properly');
   });
 
   test('jwt: it renders and makes auth_url requests', async function (assert) {
@@ -104,12 +104,12 @@ module('Integration | Component | auth jwt', function (hooks) {
     await settled();
     assert.ok(component.jwtPresent, 'renders jwt field');
     assert.ok(component.rolePresent, 'renders jwt field');
-    assert.strictEqual(this.server.handledRequests.length, 1, 'request to the default path is made');
-    assert.strictEqual(this.server.handledRequests[0].url, '/v1/auth/jwt/oidc/auth_url');
+    assert.equal(this.server.handledRequests.length, 1, 'request to the default path is made');
+    assert.equal(this.server.handledRequests[0].url, '/v1/auth/jwt/oidc/auth_url');
     this.set('selectedAuthPath', 'foo');
     await settled();
-    assert.strictEqual(this.server.handledRequests.length, 2, 'a second request was made');
-    assert.strictEqual(
+    assert.equal(this.server.handledRequests.length, 2, 'a second request was made');
+    assert.equal(
       this.server.handledRequests[1].url,
       '/v1/auth/foo/oidc/auth_url',
       'requests when path is set'
@@ -129,16 +129,12 @@ module('Integration | Component | auth jwt', function (hooks) {
     await component.role('test');
     await settled();
     assert.notOk(component.jwtPresent, 'does not show jwt input for OIDC type login');
-    assert.strictEqual(component.loginButtonText, 'Sign in with OIDC Provider');
+    assert.equal(component.loginButtonText, 'Sign in with OIDC Provider');
 
     await component.role('okta');
     // 1 for initial render, 1 for each time role changed = 3
-    assert.strictEqual(this.server.handledRequests.length, 4, 'fetches the auth_url when the path changes');
-    assert.strictEqual(
-      component.loginButtonText,
-      'Sign in with Okta',
-      'recognizes auth methods with certain urls'
-    );
+    assert.equal(this.server.handledRequests.length, 4, 'fetches the auth_url when the path changes');
+    assert.equal(component.loginButtonText, 'Sign in with Okta', 'recognizes auth methods with certain urls');
   });
 
   test('oidc: it calls window.open popup window on login', async function (assert) {
@@ -150,7 +146,7 @@ module('Integration | Component | auth jwt', function (hooks) {
       return this.openSpy.calledOnce;
     });
     cancelTimers();
-    const call = this.openSpy.getCall(0);
+    let call = this.openSpy.getCall(0);
     assert.deepEqual(
       call.args,
       ['http://example.com', 'vaultOIDCWindow', 'width=500,height=600,resizable,scrollbars=yes,top=0,left=0'],
@@ -168,7 +164,7 @@ module('Integration | Component | auth jwt', function (hooks) {
     });
     this.window.close();
     await settled();
-    assert.strictEqual(this.error, ERROR_WINDOW_CLOSED, 'calls onError with error string');
+    assert.equal(this.error, ERROR_WINDOW_CLOSED, 'calls onError with error string');
   });
 
   test('oidc: shows error when message posted with state key, wrong params', async function (assert) {
@@ -184,7 +180,7 @@ module('Integration | Component | auth jwt', function (hooks) {
       buildMessage({ data: { source: 'oidc-callback', state: 'state', foo: 'bar' } })
     );
     cancelTimers();
-    assert.strictEqual(this.error, ERROR_MISSING_PARAMS, 'calls onError with params missing error');
+    assert.equal(this.error, ERROR_MISSING_PARAMS, 'calls onError with params missing error');
   });
 
   test('oidc: storage event fires with state key, correct params', async function (assert) {

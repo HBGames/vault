@@ -30,31 +30,31 @@ export default Service.extend({
   },
 
   keyFromAccessor(accessor) {
-    const keys = this.storage().keys() || [];
-    const returnKey = keys
+    let keys = this.storage().keys() || [];
+    let returnKey = keys
       .filter((k) => k.startsWith(CONTROL_GROUP_PREFIX))
       .find((key) => key.replace(CONTROL_GROUP_PREFIX, '').startsWith(accessor));
     return returnKey ? returnKey : null;
   },
 
   storeControlGroupToken(info) {
-    const key = storageKey(info.accessor, info.creation_path);
+    let key = storageKey(info.accessor, info.creation_path);
     this.storage().setItem(key, info);
   },
 
   deleteControlGroupToken(accessor) {
     this.unmarkTokenForUnwrap();
-    const key = this.keyFromAccessor(accessor);
+    let key = this.keyFromAccessor(accessor);
     this.storage().removeItem(key);
   },
 
   deleteTokens() {
-    const keys = this.storage().keys() || [];
+    let keys = this.storage().keys() || [];
     keys.filter((k) => k.startsWith(CONTROL_GROUP_PREFIX)).forEach((key) => this.storage().removeItem(key));
   },
 
   wrapInfoForAccessor(accessor) {
-    const key = this.keyFromAccessor(accessor);
+    let key = this.keyFromAccessor(accessor);
     return key ? this.storage().getItem(key) : null;
   },
 
@@ -73,16 +73,16 @@ export default Service.extend({
     }
     let pathForUrl = parseURL(url).pathname;
     pathForUrl = pathForUrl.replace('/v1/', '');
-    const tokenInfo = this.tokenToUnwrap;
+    let tokenInfo = this.tokenToUnwrap;
     if (tokenInfo && tokenInfo.creation_path === pathForUrl) {
-      const { token, accessor, creation_time } = tokenInfo;
+      let { token, accessor, creation_time } = tokenInfo;
       return { token, accessor, creationTime: creation_time };
     }
     return null;
   },
 
   checkForControlGroup(callbackArgs, response, wasWrapTTLRequested) {
-    const creationPath = response && response?.wrap_info?.creation_path;
+    let creationPath = response && response?.wrap_info?.creation_path;
     if (
       this.version.isOSS ||
       wasWrapTTLRequested ||
@@ -92,25 +92,53 @@ export default Service.extend({
     ) {
       return RSVP.resolve(...callbackArgs);
     }
-    const error = new ControlGroupError(response.wrap_info);
+    let error = new ControlGroupError(response.wrap_info);
     return RSVP.reject(error);
   },
 
-  handleError(error) {
-    const { accessor, token, creation_path, creation_time, ttl } = error;
-    const data = { accessor, token, creation_path, creation_time, ttl };
-    data.uiParams = { url: this.router.currentURL };
+  paramsFromTransition(transitionTo, params, queryParams) {
+    let returnedParams = params.slice();
+    let qps = queryParams;
+    transitionTo.paramNames.map((name) => {
+      let param = transitionTo.params[name];
+      if (param.length) {
+        // push on to the front of the array since were're started at the end
+        returnedParams.unshift(param);
+      }
+    });
+    qps = { ...queryParams, ...transitionTo.queryParams };
+    // if there's a parent transition, recurse to get its route params
+    if (transitionTo.parent) {
+      [returnedParams, qps] = this.paramsFromTransition(transitionTo.parent, returnedParams, qps);
+    }
+    return [returnedParams, qps];
+  },
+
+  urlFromTransition(transitionObj) {
+    let transition = transitionObj.to;
+    let [params, queryParams] = this.paramsFromTransition(transition, [], {});
+    let url = this.router.urlFor(transition.name, ...params, {
+      queryParams,
+    });
+    return url.replace('/ui', '');
+  },
+
+  handleError(error, transition) {
+    let { accessor, token, creation_path, creation_time, ttl } = error;
+    let url = this.urlFromTransition(transition);
+    let data = { accessor, token, creation_path, creation_time, ttl };
+    data.uiParams = { url };
     this.storeControlGroupToken(data);
     return this.router.transitionTo('vault.cluster.access.control-group-accessor', accessor);
   },
 
   logFromError(error) {
-    const { accessor, token, creation_path, creation_time, ttl } = error;
-    const data = { accessor, token, creation_path, creation_time, ttl };
+    let { accessor, token, creation_path, creation_time, ttl } = error;
+    let data = { accessor, token, creation_path, creation_time, ttl };
     this.storeControlGroupToken(data);
 
-    const href = this.router.urlFor('vault.cluster.access.control-group-accessor', accessor);
-    const lines = [
+    let href = this.router.urlFor('vault.cluster.access.control-group-accessor', accessor);
+    let lines = [
       `A Control Group was encountered at ${error.creation_path}.`,
       `The Control Group Token is ${error.token}.`,
       `The Accessor is ${error.accessor}.`,

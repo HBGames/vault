@@ -4,12 +4,10 @@ import UnloadModelRoute from 'vault/mixins/unload-model-route';
 import UnsavedModelRoute from 'vault/mixins/unsaved-model-route';
 
 export default Route.extend(UnloadModelRoute, UnsavedModelRoute, {
-  store: service(),
   version: service(),
   wizard: service(),
-
   model() {
-    const policyType = this.policyType();
+    let policyType = this.policyType();
     if (
       policyType === 'acl' &&
       this.wizard.currentMachine === 'policies' &&

@@ -19,7 +19,6 @@
       data-test-input
     />
   {{else}}
-    {{! template-lint-disable no-down-event-binding }}
     <textarea
       class="input masked-value {{unless this.showValue 'masked-font'}}"
       rows={{1}}
@@ -31,7 +30,6 @@
       spellcheck="false"
       data-test-textarea
     ></textarea>
-    {{! template-lint-enable no-down-event-binding }}
   {{/if}}
   {{#if this.allowCopy}}
     <CopyButton

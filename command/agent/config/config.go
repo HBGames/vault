@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"os"
 	"strings"
@@ -37,7 +38,6 @@ type Config struct {
 	DisableKeepAlivesCaching    bool                       `hcl:"-"`
 	DisableKeepAlivesTemplating bool                       `hcl:"-"`
 	DisableKeepAlivesAutoAuth   bool                       `hcl:"-"`
-	LogFile                     string                     `hcl:"log_file"`
 }
 
 const (
@@ -173,7 +173,7 @@ func LoadConfig(path string) (*Config, error) {
 	}
 
 	// Read the file
-	d, err := os.ReadFile(path)
+	d, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

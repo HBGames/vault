@@ -519,11 +519,6 @@ type Core struct {
 	// pluginCatalog is used to manage plugin configurations
 	pluginCatalog *PluginCatalog
 
-	// The userFailedLoginInfo map has user failed login information.
-	// It has user information (alias-name and mount accessor) as a key
-	// and login counter, last failed login time as value
-	userFailedLoginInfo map[FailedLoginUser]*FailedLoginInfo
-
 	enableMlock bool
 
 	// This can be used to trigger operations to stop running when Vault is
@@ -930,7 +925,6 @@ func CreateCore(conf *CoreConfig) (*Core, error) {
 		mountMigrationTracker:          &sync.Map{},
 		disableSSCTokens:               conf.DisableSSCTokens,
 		effectiveSDKVersion:            effectiveSDKVersion,
-		userFailedLoginInfo:            make(map[FailedLoginUser]*FailedLoginInfo),
 	}
 
 	c.standbyStopCh.Store(make(chan struct{}))
@@ -2267,9 +2261,6 @@ func (s standardUnsealStrategy) unseal(ctx context.Context, logger log.Logger, c
 		return err
 	}
 
-	c.metricsCh = make(chan struct{})
-	go c.emitMetricsActiveNode(c.metricsCh)
-
 	return nil
 }
 
@@ -2327,6 +2318,9 @@ func (c *Core) postUnseal(ctx context.Context, ctxCancelFunc context.CancelFunc,
 		// surprised by this at the next need to unseal.
 		seal.StartHealthCheck()
 	}
+
+	c.metricsCh = make(chan struct{})
+	go c.emitMetrics(c.metricsCh)
 
 	// This is intentionally the last block in this function. We want to allow
 	// writes just before allowing client requests, to ensure everything has

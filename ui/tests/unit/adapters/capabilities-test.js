@@ -7,7 +7,7 @@ module('Unit | Adapter | capabilities', function (hooks) {
 
   test('calls the correct url', function (assert) {
     let url, method, options;
-    const adapter = this.owner.factoryFor('adapter:capabilities').create({
+    let adapter = this.owner.factoryFor('adapter:capabilities').create({
       ajax: (...args) => {
         [url, method, options] = args;
         return resolve();
@@ -15,8 +15,8 @@ module('Unit | Adapter | capabilities', function (hooks) {
     });
 
     adapter.findRecord(null, 'capabilities', 'foo');
-    assert.strictEqual(url, '/v1/sys/capabilities-self', 'calls the correct URL');
+    assert.equal(url, '/v1/sys/capabilities-self', 'calls the correct URL');
     assert.deepEqual({ paths: ['foo'] }, options.data, 'data params OK');
-    assert.strictEqual(method, 'POST', 'method OK');
+    assert.equal(method, 'POST', 'method OK');
   });
 });

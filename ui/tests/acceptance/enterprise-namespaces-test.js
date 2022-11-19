@@ -21,10 +21,10 @@ module('Acceptance | Enterprise | namespaces', function (hooks) {
   });
 
   test('it clears namespaces when you log out', async function (assert) {
-    const ns = 'foo';
+    let ns = 'foo';
     await createNS(ns);
     await shell.runCommands(`write -field=client_token auth/token/create policies=default`);
-    const token = shell.lastLogOutput;
+    let token = shell.lastLogOutput;
     await logout.visit();
     await authPage.login(token);
     assert.dom('[data-test-namespace-toggle]').doesNotExist('does not show the namespace picker');
@@ -32,8 +32,8 @@ module('Acceptance | Enterprise | namespaces', function (hooks) {
   });
 
   test('it shows nested namespaces if you log in with a namspace starting with a /', async function (assert) {
-    const nses = ['beep', 'boop', 'bop'];
-    for (const [i, ns] of nses.entries()) {
+    let nses = ['beep', 'boop', 'bop'];
+    for (let [i, ns] of nses.entries()) {
       await createNS(ns);
       await settled();
       // this is usually triggered when creating a ns in the form, here we'll trigger a reload of the
@@ -43,8 +43,8 @@ module('Acceptance | Enterprise | namespaces', function (hooks) {
         break;
       }
       // the namespace path will include all of the namespaces up to this point
-      const targetNamespace = nses.slice(0, i + 1).join('/');
-      const url = `/vault/secrets?namespace=${targetNamespace}`;
+      let targetNamespace = nses.slice(0, i + 1).join('/');
+      let url = `/vault/secrets?namespace=${targetNamespace}`;
       // check if namespace is in the toggle
       await click('[data-test-namespace-toggle]');
 
@@ -74,15 +74,15 @@ module('Acceptance | Enterprise | namespaces', function (hooks) {
   test('it shows the regular namespace toolbar when not managed', async function (assert) {
     // This test is the opposite of the test in managed-namespace-test
     await logout.visit();
-    assert.strictEqual(currentURL(), '/vault/auth?with=token', 'Does not redirect');
+    assert.equal(currentURL(), '/vault/auth?with=token', 'Does not redirect');
     assert.dom('[data-test-namespace-toolbar]').exists('Normal namespace toolbar exists');
     assert
       .dom('[data-test-managed-namespace-toolbar]')
       .doesNotExist('Managed namespace toolbar does not exist');
     assert.dom('input#namespace').hasAttribute('placeholder', '/ (Root)');
     await fillIn('input#namespace', '/foo');
-    const encodedNamespace = encodeURIComponent('/foo');
-    assert.strictEqual(
+    let encodedNamespace = encodeURIComponent('/foo');
+    assert.equal(
       currentURL(),
       `/vault/auth?namespace=${encodedNamespace}&with=token`,
       'Does not prepend root to namespace'

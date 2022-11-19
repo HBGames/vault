@@ -9,7 +9,7 @@ module('Integration | Component | keymgmt/key-edit', function (hooks) {
 
   hooks.beforeEach(function () {
     const now = new Date().toString();
-    const model = EmberObject.create({
+    let model = EmberObject.create({
       name: 'Unicorns',
       id: 'Unicorns',
       minEnabledVersion: 1,
@@ -32,9 +32,7 @@ module('Integration | Component | keymgmt/key-edit', function (hooks) {
   // TODO: Add capabilities tests
   test('it renders show view as default', async function (assert) {
     assert.expect(8);
-    await render(
-      hbs`<Keymgmt::KeyEdit @model={{this.model}} @tab={{this.tab}} /><div id="modal-wormhole" />`
-    );
+    await render(hbs`<Keymgmt::KeyEdit @model={{model}} @tab={{tab}} /><div id="modal-wormhole" />`);
     assert.dom('[data-test-secret-header]').hasText('Unicorns', 'Shows key name');
     assert.dom('[data-test-keymgmt-key-toolbar]').exists('Subnav toolbar exists');
     assert.dom('[data-test-tab="Details"]').exists('Details tab exists');
@@ -51,16 +49,14 @@ module('Integration | Component | keymgmt/key-edit', function (hooks) {
 
   test('it renders the correct elements on edit view', async function (assert) {
     assert.expect(4);
-    const model = EmberObject.create({
+    let model = EmberObject.create({
       name: 'Unicorns',
       id: 'Unicorns',
     });
     this.set('mode', 'edit');
     this.set('model', model);
 
-    await render(
-      hbs`<Keymgmt::KeyEdit @model={{this.model}} @mode={{this.mode}} /><div id="modal-wormhole" />`
-    );
+    await render(hbs`<Keymgmt::KeyEdit @model={{model}} @mode={{mode}} /><div id="modal-wormhole" />`);
     assert.dom('[data-test-secret-header]').hasText('Edit key', 'Shows edit header');
     assert.dom('[data-test-keymgmt-key-toolbar]').doesNotExist('Subnav toolbar does not exist');
     assert.dom('[data-test-tab="Details"]').doesNotExist('Details tab does not exist');
@@ -69,13 +65,11 @@ module('Integration | Component | keymgmt/key-edit', function (hooks) {
 
   test('it renders the correct elements on create view', async function (assert) {
     assert.expect(4);
-    const model = EmberObject.create({});
+    let model = EmberObject.create({});
     this.set('mode', 'create');
     this.set('model', model);
 
-    await render(
-      hbs`<Keymgmt::KeyEdit @model={{this.model}} @mode={{this.mode}} /><div id="modal-wormhole" />`
-    );
+    await render(hbs`<Keymgmt::KeyEdit @model={{model}} @mode={{mode}} /><div id="modal-wormhole" />`);
     assert.dom('[data-test-secret-header]').hasText('Create key', 'Shows edit header');
     assert.dom('[data-test-keymgmt-key-toolbar]').doesNotExist('Subnav toolbar does not exist');
     assert.dom('[data-test-tab="Details"]').doesNotExist('Details tab does not exist');
@@ -87,9 +81,7 @@ module('Integration | Component | keymgmt/key-edit', function (hooks) {
     const store = this.owner.lookup('service:store');
     this.model = store.createRecord('keymgmt/key');
     this.set('mode', 'create');
-    await render(
-      hbs`<Keymgmt::KeyEdit @model={{this.model}} @mode={{this.mode}} /><div id="modal-wormhole" />`
-    );
+    await render(hbs`<Keymgmt::KeyEdit @model={{model}} @mode={{mode}} /><div id="modal-wormhole" />`);
     assert.dom('[data-test-input="type"]').hasValue('rsa-2048', 'Has type rsa-2048 by default');
   });
 });

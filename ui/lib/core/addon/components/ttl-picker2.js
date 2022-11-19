@@ -13,7 +13,7 @@
  * @param helperTextDisabled="Allow tokens to be used indefinitely" {String} - This helper text is shown under the label when the toggle is switched off
  * @param helperTextEnabled="Disable the use of the token after" {String} - This helper text is shown under the label when the toggle is switched on
  * @param description="Longer description about this value, what it does, and why it is useful. Shows up in tooltip next to helpertext"
- * @param time='' {Number} - The time (in the default units) which will be adjustable by the user of the form
+ * @param time=30 {Number} - The time (in the default units) which will be adjustable by the user of the form
  * @param unit="s" {String} - This is the unit key which will show by default on the form. Can be one of `s` (seconds), `m` (minutes), `h` (hours), `d` (days)
  * @param recalculationTimeout=5000 {Number} - This is the time, in milliseconds, that `recalculateSeconds` will be be true after time is updated
  * @param initialValue=null {String} - This is the value set initially (particularly from a string like '30h')
@@ -39,7 +39,7 @@ const convertFromSeconds = (seconds, unit) => {
 };
 const goSafeConvertFromSeconds = (seconds, unit) => {
   // Go only accepts s, m, or h units
-  const u = unit === 'd' ? 'h' : unit;
+  let u = unit === 'd' ? 'h' : unit;
   return convertFromSeconds(seconds, u) + u;
 };
 
@@ -50,7 +50,7 @@ export default TtlForm.extend({
   helperTextDisabled: 'Allow tokens to be used indefinitely',
   helperTextEnabled: 'Disable the use of the token after',
   description: '',
-  time: '', // if defaultValue is NOT set, then do not display a defaultValue.
+  time: 30,
   unit: 's',
   initialValue: null,
   changeOnInit: false,
@@ -62,7 +62,6 @@ export default TtlForm.extend({
     const enable = this.initialEnabled;
     const changeOnInit = this.changeOnInit;
     // if initial value is unset use params passed in as defaults
-    // and if no defaultValue is passed in display no time
     if (!value && value !== 0) {
       return;
     }
@@ -127,7 +126,7 @@ export default TtlForm.extend({
     ];
   }),
   handleChange() {
-    const { time, unit, enableTTL, seconds } = this;
+    let { time, unit, enableTTL, seconds } = this;
     const ttl = {
       enabled: this.hideToggle || enableTTL,
       seconds,

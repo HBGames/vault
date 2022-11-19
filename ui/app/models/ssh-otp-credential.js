@@ -17,7 +17,7 @@ export default Model.extend({
   keyType: attr('string'),
   port: attr('number'),
   attrs: computed('key', function () {
-    const keys = this.key ? DISPLAY_FIELDS.slice(0) : CREATE_FIELDS.slice(0);
+    let keys = this.key ? DISPLAY_FIELDS.slice(0) : CREATE_FIELDS.slice(0);
     return expandAttributeMeta(this, keys);
   }),
   toCreds: reads('key'),

@@ -18,7 +18,7 @@ module('Acceptance | settings/configure/secrets/pki', function (hooks) {
     await settled();
     await page.visit({ backend: path });
     await settled();
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.settings.configure-secret-backend.section',
       'redirects from the index'

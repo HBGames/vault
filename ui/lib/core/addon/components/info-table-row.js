@@ -41,7 +41,7 @@ export default class InfoTableRowComponent extends Component {
   }
 
   get valueIsEmpty() {
-    const { value } = this.args;
+    let { value } = this.args;
     if (typeOf(value) === 'array' && value.length === 0) {
       return true;
     }

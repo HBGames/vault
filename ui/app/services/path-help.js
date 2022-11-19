@@ -27,15 +27,15 @@ export default Service.extend({
   attrs: null,
   dynamicApiPath: '',
   ajax(url, options = {}) {
-    const appAdapter = getOwner(this).lookup(`adapter:application`);
-    const { data } = options;
+    let appAdapter = getOwner(this).lookup(`adapter:application`);
+    let { data } = options;
     return appAdapter.ajax(url, 'GET', {
       data,
     });
   },
 
   getNewModel(modelType, backend, apiPath, itemType) {
-    const owner = getOwner(this);
+    let owner = getOwner(this);
     const modelName = `model:${modelType}`;
 
     const modelFactory = owner.factoryFor(modelName);
@@ -74,9 +74,9 @@ export default Service.extend({
           const adapter = this.getNewAdapter(pathInfo, itemType);
           owner.register(`adapter:${modelType}`, adapter);
         }
-        let path;
+        let path, paths;
         // if we have an item we want the create info for that itemType
-        const paths = itemType ? this.filterPathsByItemType(pathInfo, itemType) : pathInfo.paths;
+        paths = itemType ? this.filterPathsByItemType(pathInfo, itemType) : pathInfo.paths;
         const createPath = paths.find((path) => path.operations.includes('post') && path.action !== 'Delete');
         path = createPath.path;
         path = path.includes('{') ? path.slice(0, path.indexOf('{') - 1) + '/example' : path;
@@ -93,7 +93,7 @@ export default Service.extend({
       })
       .catch((err) => {
         // TODO: we should handle the error better here
-        console.error(err); // eslint-disable-line
+        console.error(err);
       });
   },
 
@@ -156,14 +156,14 @@ export default Service.extend({
   },
 
   getPaths(apiPath, backend, itemType, itemID) {
-    const debugString =
+    let debugString =
       itemID && itemType
         ? `Fetching relevant paths for ${backend} ${itemType} ${itemID} from ${apiPath}`
         : `Fetching relevant paths for ${backend} ${itemType} from ${apiPath}`;
     debug(debugString);
     return this.ajax(`/v1/${apiPath}?help=1`, backend).then((help) => {
       const pathInfo = help.openapi.paths;
-      const paths = Object.entries(pathInfo);
+      let paths = Object.entries(pathInfo);
 
       return paths.reduce(this.reducePathsByPathName, {
         apiPath,
@@ -188,12 +188,12 @@ export default Service.extend({
       const path = Object.keys(help.openapi.paths)[0]; // do this or look at name
       const pathInfo = help.openapi.paths[path];
       const params = pathInfo.parameters;
-      const paramProp = {};
+      let paramProp = {};
 
       // include url params
       if (params) {
         const { name, schema, description } = params[0];
-        const label = capitalize(name.split('_').join(' '));
+        let label = capitalize(name.split('_').join(' '));
 
         paramProp[name] = {
           'x-vault-displayAttrs': {
@@ -211,7 +211,7 @@ export default Service.extend({
       if (schema.$ref) {
         // $ref will be shaped like `#/components/schemas/MyResponseType
         // which maps to the location of the item within the openApi response
-        const loc = schema.$ref.replace('#/', '').split('/');
+        let loc = schema.$ref.replace('#/', '').split('/');
         props = loc.reduce((prev, curr) => {
           return prev[curr] || {};
         }, help.openapi).properties;
@@ -227,7 +227,7 @@ export default Service.extend({
 
   getNewAdapter(pathInfo, itemType) {
     // we need list and create paths to set the correct urls for actions
-    const paths = this.filterPathsByItemType(pathInfo, itemType);
+    let paths = this.filterPathsByItemType(pathInfo, itemType);
     let { apiPath } = pathInfo;
     const getPath = paths.find((path) => path.operations.includes('get'));
 
@@ -297,7 +297,7 @@ export default Service.extend({
   registerNewModelWithProps(helpUrl, backend, newModel, modelName) {
     return this.getProps(helpUrl, backend).then((props) => {
       const { attrs, newFields } = combineAttributes(newModel.attributes, props);
-      const owner = getOwner(this);
+      let owner = getOwner(this);
       newModel = newModel.extend(attrs, { newFields });
       // if our newModel doesn't have fieldGroups already
       // we need to create them
@@ -346,10 +346,10 @@ export default Service.extend({
     });
   },
   getFieldGroups(newModel) {
-    const groups = {
+    let groups = {
       default: [],
     };
-    const fieldGroups = [];
+    let fieldGroups = [];
     newModel.attributes.forEach((attr) => {
       // if the attr comes in with a fieldGroup from OpenAPI,
       // add it to that group
@@ -364,7 +364,7 @@ export default Service.extend({
         groups.default.push(attr.name);
       }
     });
-    for (const group in groups) {
+    for (let group in groups) {
       fieldGroups.push({ [group]: groups[group] });
     }
     return fieldToAttrs(newModel, fieldGroups);

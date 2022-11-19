@@ -13,7 +13,7 @@ export default Model.extend({
 
   //urls
   urlsAttrs: computed(function () {
-    const keys = ['issuingCertificates', 'crlDistributionPoints', 'ocspServers'];
+    let keys = ['issuingCertificates', 'crlDistributionPoints', 'ocspServers'];
     return this.attrList(keys);
   }),
   issuingCertificates: attr({
@@ -30,7 +30,7 @@ export default Model.extend({
 
   //tidy
   tidyAttrs: computed(function () {
-    const keys = ['tidyCertStore', 'tidyRevocationList', 'safetyBuffer'];
+    let keys = ['tidyCertStore', 'tidyRevocationList', 'safetyBuffer'];
     return this.attrList(keys);
   }),
   tidyCertStore: attr('boolean', {
@@ -47,7 +47,7 @@ export default Model.extend({
   }),
 
   crlAttrs: computed(function () {
-    const keys = ['expiry', 'disable'];
+    let keys = ['expiry', 'disable'];
     return this.attrList(keys);
   }),
   //crl

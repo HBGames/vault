@@ -435,17 +435,6 @@ func (c *Core) runStandby(doneCh, manualStepDownCh, stopCh chan struct{}) {
 		})
 	}
 	{
-		metricsStop := make(chan struct{})
-
-		g.Add(func() error {
-			c.metricsLoop(metricsStop)
-			return nil
-		}, func(error) {
-			close(metricsStop)
-			c.logger.Debug("shutting down periodic metrics")
-		})
-	}
-	{
 		// Wait for leadership
 		leaderStopCh := make(chan struct{})
 
@@ -524,9 +513,7 @@ func (c *Core) waitForLeadership(newLeaderCh chan func(), manualStepDownCh, stop
 		continueCh := interruptPerfStandby(newLeaderCh, stopCh)
 
 		// Grab the statelock or stop
-		l := newLockGrabber(c.stateLock.Lock, c.stateLock.Unlock, stopCh)
-		go l.grab()
-		if stopped := l.lockOrStop(); stopped {
+		if stopped := grabLockOrStop(c.stateLock.Lock, c.stateLock.Unlock, stopCh); stopped {
 			lock.Unlock()
 			close(continueCh)
 			metrics.MeasureSince([]string{"core", "leadership_setup_failed"}, activeTime)
@@ -672,9 +659,7 @@ func (c *Core) waitForLeadership(newLeaderCh chan func(), manualStepDownCh, stop
 			}()
 
 			// Grab lock if we are not stopped
-			l := newLockGrabber(c.stateLock.Lock, c.stateLock.Unlock, stopCh)
-			go l.grab()
-			stopped := l.lockOrStop()
+			stopped := grabLockOrStop(c.stateLock.Lock, c.stateLock.Unlock, stopCh)
 
 			// Cancel the context incase the above go routine hasn't done it
 			// yet
@@ -717,74 +702,46 @@ func (c *Core) waitForLeadership(newLeaderCh chan func(), manualStepDownCh, stop
 // lock was acquired (stopped=false) then it's up to the caller to unlock. If
 // the lock was not acquired (stopped=true), the caller does not hold the lock and
 // should not call unlock.
-// It's probably better to inline the body of grabLockOrStop into your function
-// instead of calling it. If multiple functions call grabLockOrStop, when a deadlock
-// occurs, we have no way of knowing who launched the grab goroutine, complicating
-// investigation.
 func grabLockOrStop(lockFunc, unlockFunc func(), stopCh chan struct{}) (stopped bool) {
-	l := newLockGrabber(lockFunc, unlockFunc, stopCh)
-	go l.grab()
-	return l.lockOrStop()
-}
-
-type lockGrabber struct {
-	// stopCh provides a way to interrupt the grab-or-stop
-	stopCh chan struct{}
-	// doneCh is closed when the child goroutine is done.
-	doneCh     chan struct{}
-	lockFunc   func()
-	unlockFunc func()
 	// lock protects these variables which are shared by parent and child.
-	lock          sync.Mutex
-	parentWaiting bool
-	locked        bool
-}
+	var lock sync.Mutex
+	parentWaiting := true
+	locked := false
 
-func newLockGrabber(lockFunc, unlockFunc func(), stopCh chan struct{}) *lockGrabber {
-	return &lockGrabber{
-		doneCh:        make(chan struct{}),
-		lockFunc:      lockFunc,
-		unlockFunc:    unlockFunc,
-		parentWaiting: true,
-		stopCh:        stopCh,
-	}
-}
+	// doneCh is closed when the child goroutine is done.
+	doneCh := make(chan struct{})
+	go func() {
+		defer close(doneCh)
+		lockFunc()
 
-// lockOrStop waits for grab to get a lock or give up, see grabLockOrStop for how to use it.
-func (l *lockGrabber) lockOrStop() (stopped bool) {
+		// The parent goroutine may or may not be waiting.
+		lock.Lock()
+		defer lock.Unlock()
+		if !parentWaiting {
+			unlockFunc()
+		} else {
+			locked = true
+		}
+	}()
+
 	stop := false
 	select {
-	case <-l.stopCh:
+	case <-stopCh:
 		stop = true
-	case <-l.doneCh:
+	case <-doneCh:
 	}
 
 	// The child goroutine may not have acquired the lock yet.
-	l.lock.Lock()
-	defer l.lock.Unlock()
-	l.parentWaiting = false
+	lock.Lock()
+	defer lock.Unlock()
+	parentWaiting = false
 	if stop {
-		if l.locked {
-			l.unlockFunc()
+		if locked {
+			unlockFunc()
 		}
 		return true
 	}
 	return false
-}
-
-// grab tries to get a lock, see grabLockOrStop for how to use it.
-func (l *lockGrabber) grab() {
-	defer close(l.doneCh)
-	l.lockFunc()
-
-	// The parent goroutine may or may not be waiting.
-	l.lock.Lock()
-	defer l.lock.Unlock()
-	if !l.parentWaiting {
-		l.unlockFunc()
-	} else {
-		l.locked = true
-	}
 }
 
 // This checks the leader periodically to ensure that we switch RPC to a new

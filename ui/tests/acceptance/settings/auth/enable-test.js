@@ -17,15 +17,15 @@ module('Acceptance | settings/auth/enable', function (hooks) {
     const path = `approle-${new Date().getTime()}`;
     const type = 'approle';
     await page.visit();
-    assert.strictEqual(currentRouteName(), 'vault.cluster.settings.auth.enable');
+    assert.equal(currentRouteName(), 'vault.cluster.settings.auth.enable');
     await page.enable(type, path);
     await settled();
-    await assert.strictEqual(
+    await assert.equal(
       page.flash.latestMessage,
       `Successfully mounted the ${type} auth method at ${path}.`,
       'success flash shows'
     );
-    assert.strictEqual(
+    assert.equal(
       currentRouteName(),
       'vault.cluster.settings.auth.configure.section',
       'redirects to the auth config page'

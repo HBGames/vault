@@ -14,17 +14,13 @@ module('Acceptance | gcpkms/enable', function (hooks) {
 
   test('enable gcpkms', async function (assert) {
     // Error: Cannot call `visit` without having first called `setupApplicationContext`.
-    const enginePath = `gcpkms-${new Date().getTime()}`;
+    let enginePath = `gcpkms-${new Date().getTime()}`;
     await mountSecrets.visit();
     await settled();
     await mountSecrets.selectType('gcpkms');
     await mountSecrets.next().path(enginePath).submit();
     await settled();
-    assert.strictEqual(
-      currentRouteName(),
-      'vault.cluster.secrets.backends',
-      'redirects to the backends page'
-    );
+    assert.equal(currentRouteName(), 'vault.cluster.secrets.backends', 'redirects to the backends page');
     assert.ok(backendsPage.rows.filterBy('path', `${enginePath}/`)[0], 'shows the gcpkms engine');
   });
 });
